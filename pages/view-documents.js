@@ -1,0 +1,104 @@
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, CircularProgress } from '@mui/material';
+import axios from 'axios';
+import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { fetchAllDigitalAssetByOwner, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
+import { createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi";
+import wallet from './wallet.json'; // Assicurati che il percorso sia corretto
+
+const ViewDocuments = () => {
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      try {
+        const connectionUrl = "https://api.devnet.solana.com";
+        const commitment = "finalized";
+        const umi = createUmi(connectionUrl, commitment);
+        umi.use(mplTokenMetadata());
+        
+        const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
+        const myKeypairSigner = createSignerFromKeypair(umi, keypair);
+        umi.use(signerIdentity(myKeypairSigner));
+
+        const ownerPublicKey = "CdZQgtkT8actnoUpjPPvadKWvSw4gYZ9w9SQeeqY5y6k"; // Replace with your public key
+        const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
+        console.log('Assets:', assets);
+        
+        const documentsData = await Promise.all(
+          assets.map(async (asset) => {
+            const metadataUri = asset.metadata.uri;
+            const res = await axios.get(metadataUri);
+            console.log("Metadata URI:", metadataUri);
+            return res.data;
+        
+
+          })
+        );
+        
+        setDocuments(documentsData);
+      } catch (err) {
+        setError("Error fetching documents: " + err.message);
+        console.error("Error fetching documents:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDocuments();
+  }, []);
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Visualizza i tuoi documenti
+      </Typography>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
+      ) : (
+        <Box display="flex" flexDirection="column" alignItems="center">
+          {documents.map((doc, index) => (
+            <Box
+              key={index}
+              sx={{
+                margin: 2,
+                padding: 2,
+                border: '1px solid #ccc',
+                borderRadius: 4,
+                width: '100%',
+                maxWidth: 600,
+                backgroundColor: '#fff',
+                color: '#000',
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                {doc.name}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {doc.description}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {doc.attributes.map((attr, index) => (
+                    <span key={index}>
+                    <strong>{attr.trait_type}:</strong> {attr.value}
+                    {index < doc.attributes.length - 1 && ', '}
+                  </span>
+                ))}
+              </Typography>
+              
+              <img src={doc.image} alt={doc.name} style={{ maxWidth: '100%' }} />
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Container>
+  );
+};
+
+export default ViewDocuments;
