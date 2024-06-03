@@ -5,24 +5,26 @@ import {
   createNft,
   mplTokenMetadata,
   fetchAllDigitalAssetByOwner,
-  fetchMetadata,
 } from "@metaplex-foundation/mpl-token-metadata";
 import {
   createGenericFile,
   createSignerFromKeypair,
   signerIdentity,
 } from "@metaplex-foundation/umi";
-import {
-  publicKey,
-  generateSigner,
-  percentAmount,
-} from "@metaplex-foundation/umi";
+import { generateSigner, percentAmount } from "@metaplex-foundation/umi";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import wallet from "./wallet.json";
-import { Stepper, Step, StepLabel, Button, TextField, Typography } from "@mui/material";
-
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
+import CryptoJS from "crypto-js"; // Import crypto-js
 
 const connectionUrl = "https://api.devnet.solana.com";
 const commitment = "finalized";
@@ -35,19 +37,26 @@ const UploadDocuments = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [metadataValues, setMetadataValues] = useState({
-    title: "",
-    object: "",
-    description: "",
-    date: "",
+    Titolo: "",
+    Oggetto: "",
+    Descrizione: "",
+    Data: "",
   });
 
-  const steps = ["Upload Image", "Enter Metadata", "Mint NFT"];
+  const steps = ["Carica immagine", "Inserisci i dati", "Mint documento su blockchain"];
+
+  const encryptionKey = "static-encryption-key"; // Static encryption key
+  const encryptValue = (value) => {
+    return CryptoJS.AES.encrypt(value, encryptionKey).toString();
+  };
 
   async function initializeUmi(image) {
     const umi = createUmi(connectionUrl, commitment);
     umi.use(irysUploader());
 
-    const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
+    const keypair = umi.eddsa.createKeypairFromSecretKey(
+      new Uint8Array(wallet)
+    );
     const myKeypairSigner = createSignerFromKeypair(umi, keypair);
     umi.use(signerIdentity(myKeypairSigner));
 
@@ -61,15 +70,19 @@ const UploadDocuments = () => {
     setLoading(true);
     setError(null);
     try {
-      const assets = await fetchAllDigitalAssetByOwner(umi2, "CdZQgtkT8actnoUpjPPvadKWvSw4gYZ9w9SQeeqY5y6k");
+      const assets = await fetchAllDigitalAssetByOwner(
+        umi2,
+        "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"
+      );
       console.log(assets[0]);
-      const res = await axios.get('https://arweave.net/f0AjqtphISJ4z_ZiaLVY5eqI6P0w2qWjzggP-T55qVs');
-      console.log(res)
+      const res = await axios.get(
+        "https://arweave.net/f0AjqtphISJ4z_ZiaLVY5eqI6P0w2qWjzggP-T55qVs"
+      );
+      console.log(res);
       const image = await readFile(selectedImage);
       const myUri = await initializeUmi(image);
       setUploadResult(myUri);
       console.log("Image upload successful:", myUri);
-   
 
       handleNext();
     } catch (err) {
@@ -84,20 +97,22 @@ const UploadDocuments = () => {
     try {
       const umi = createUmi(connectionUrl, commitment);
       umi.use(irysUploader());
-      const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
+      const keypair = umi.eddsa.createKeypairFromSecretKey(
+        new Uint8Array(wallet)
+      );
       const myKeypairSigner = createSignerFromKeypair(umi, keypair);
       umi.use(signerIdentity(myKeypairSigner));
 
       const metadata = {
         name: "NFTGLD",
         symbol: "MVPGLD",
-        description: metadataValues.description,
+        Descrizione: encryptValue(metadataValues.Descrizione), // Cripta solo il valore della descrizione
         image: uploadResult,
         attributes: [
-          { trait_type: "Object", value: metadataValues.object },
-          { trait_type: "Date", value: metadataValues.date },
-          { trait_type: "Description", value: metadataValues.description },
-          { trait_type: "Title", value: metadataValues.title },
+          { trait_type: "Oggetto", value: encryptValue(metadataValues.Oggetto) },
+          { trait_type: "Data", value: encryptValue(metadataValues.Data) }, // Cripta solo il valore della data
+          { trait_type: "Descrizione", value: encryptValue(metadataValues.Descrizione) }, // Non cripta il valore del titolo
+          { trait_type: "Titolo", value: encryptValue(metadataValues.Titolo) }, // Non cripta il valore della descrizione
         ],
         properties: {
           files: [{ type: "image/jpeg", uri: uploadResult }],
@@ -157,8 +172,10 @@ const UploadDocuments = () => {
     });
   };
 
-  const handleNext = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  const handleNext = () =>
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handleBack = () =>
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
   return (
     <div className="App">
@@ -170,63 +187,73 @@ const UploadDocuments = () => {
             </Step>
           ))}
         </Stepper>
+        
         {activeStep === 0 && (
           <div>
-            <label htmlFor="imageInput">Select NFT image:</label>
-            <input id="imageInput" type="file" accept="image/*" onChange={handleImageChange} />
+            <label htmlFor="imageInput">Seleziona la tua immagine: </label>
+            <br />
+            <input
+              id="imageInput"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+           
             {selectedImage && (
               <div className="image-preview">
+                <br />
                 <Image
                   src={URL.createObjectURL(selectedImage)}
                   alt="Preview"
-                  width={200}
-                  height={200}
+                  width={100}
+                  height={100}
+                  
                 />
               </div>
             )}
             <Button onClick={uploadImage} disabled={loading}>
-              {loading ? "Uploading..." : "Upload NFT Image"}
+              {loading ? "Uploading..." : "Upload immagine"}
             </Button>
           </div>
         )}
         {activeStep === 1 && uploadResult && (
           <div>
             <TextField
-              label="Title"
-              name="title"
-              value={metadataValues.title}
+              label="Titolo documento"
+              name="Titolo"
+              value={metadataValues.Titolo}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
             />
             <TextField
-              label="Object"
-              name="object"
-              value={metadataValues.object}
+              label="Oggetto"
+              name="Oggetto"
+              value={metadataValues.Oggetto}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
             />
             <TextField
-              label="Description"
-              name="description"
-              value={metadataValues.description}
+              label="Descrizione"
+              name="Descrizione"
+              value={metadataValues.Descrizione}
               onChange={handleInputChange}
               fullWidth
               margin="normal"
             />
             <TextField
-              label="Date"
-              name="date"
+              label="Data"
+              name="Data"
               type="date"
-              value={metadataValues.date}
+              value={metadataValues.Data}
               onChange={handleInputChange}
               InputLabelProps={{ shrink: true }}
               fullWidth
               margin="normal"
             />
             <Button onClick={createMetadata} disabled={loading}>
-              {loading ? "Uploading..." : "Create Metadata"}
+              {loading ? "Caricamento..." : "Crea metadati"}
             </Button>
           </div>
         )}
@@ -240,13 +267,13 @@ const UploadDocuments = () => {
         )}
         {activeStep < steps.length - 1 && (
           <Button disabled={activeStep === 0} onClick={handleBack}>
-            Back
+            Indietro
           </Button>
         )}
         {error && <Typography color="error">{error}</Typography>}
       </header>
     </div>
   );
-}
+};
 
 export default UploadDocuments;

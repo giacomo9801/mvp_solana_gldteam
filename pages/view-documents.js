@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Container, Typography, Box, CircularProgress } from "@mui/material";
+import axios from "axios";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { fetchAllDigitalAssetByOwner, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
-import { createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi";
-import wallet from './wallet.json'; // Assicurati che il percorso sia corretto
+import {
+  fetchAllDigitalAssetByOwner,
+  mplTokenMetadata,
+} from "@metaplex-foundation/mpl-token-metadata";
+import {
+  createSignerFromKeypair,
+  signerIdentity,
+} from "@metaplex-foundation/umi";
+import wallet from "./wallet.json"; // Assicurati che il percorso sia corretto
 
 const ViewDocuments = () => {
   const [documents, setDocuments] = useState([]);
@@ -18,26 +24,26 @@ const ViewDocuments = () => {
         const commitment = "finalized";
         const umi = createUmi(connectionUrl, commitment);
         umi.use(mplTokenMetadata());
-        
-        const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
+
+        const keypair = umi.eddsa.createKeypairFromSecretKey(
+          new Uint8Array(wallet)
+        );
         const myKeypairSigner = createSignerFromKeypair(umi, keypair);
         umi.use(signerIdentity(myKeypairSigner));
 
-        const ownerPublicKey = "CdZQgtkT8actnoUpjPPvadKWvSw4gYZ9w9SQeeqY5y6k"; // Replace with your public key
+        const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Replace with your public key
         const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
-        console.log('Assets:', assets);
-        
+        console.log("Assets:", assets);
+
         const documentsData = await Promise.all(
           assets.map(async (asset) => {
             const metadataUri = asset.metadata.uri;
             const res = await axios.get(metadataUri);
             console.log("Metadata URI:", metadataUri);
             return res.data;
-        
-
           })
         );
-        
+
         setDocuments(documentsData);
       } catch (err) {
         setError("Error fetching documents: " + err.message);
@@ -56,7 +62,12 @@ const ViewDocuments = () => {
         Visualizza i tuoi documenti
       </Typography>
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="80vh"
+        >
           <CircularProgress />
         </Box>
       ) : error ? (
@@ -69,12 +80,12 @@ const ViewDocuments = () => {
               sx={{
                 margin: 2,
                 padding: 2,
-                border: '1px solid #ccc',
+                border: "1px solid #ccc",
                 borderRadius: 4,
-                width: '100%',
+                width: "100%",
                 maxWidth: 600,
-                backgroundColor: '#fff',
-                color: '#000',
+                backgroundColor: "#fff",
+                color: "#000",
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -85,14 +96,18 @@ const ViewDocuments = () => {
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {doc.attributes.map((attr, index) => (
-                    <span key={index}>
+                  <span key={index}>
                     <strong>{attr.trait_type}:</strong> {attr.value}
-                    {index < doc.attributes.length - 1 && ', '}
+                    {index < doc.attributes.length - 1 && ", "}
                   </span>
                 ))}
               </Typography>
-              
-              <img src={doc.image} alt={doc.name} style={{ maxWidth: '100%' }} />
+
+              <img
+                src={doc.image}
+                alt={doc.name}
+                style={{ maxWidth: "100%" }}
+              />
             </Box>
           ))}
         </Box>

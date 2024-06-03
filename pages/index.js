@@ -1,6 +1,15 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Button, Card, CardContent, Typography, Container, Box } from '@mui/material';
+import React from "react";
+import { useRouter } from "next/router";
+import {
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Container,
+  Box,
+} from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import { PrivacyTip, Search } from "@mui/icons-material";
 
 const App = () => {
   const router = useRouter();
@@ -8,12 +17,17 @@ const App = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        backgroundColor: '#333',
-        color: '#fff',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        minHeight: "100vh",
+        backgroundColor: "#333",
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        overflow: "hidden",
+        backgroundImage: 'url(/backgroundsolana.png)',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        opacity: 0.9,
       }}
     >
       <header>
@@ -21,26 +35,47 @@ const App = () => {
           Benvenuto nella tua Dashboard
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>
-          Ciao tizio loggato
+          Ciao tizio loggato 👋
         </Typography>
       </header>
-      <Container sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Box display="flex" justifyContent="center" alignItems="center">
+      <Container
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
           <Card
             sx={{
+              minWidth: 275,
               margin: 2,
-              background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-              color: 'white',
+              padding: 2,
+              backgroundColor: "rgba(5, 40, 76, 0.7)", // Background glass effect
+              backdropFilter: "blur(10px)", // Blur effect
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)", // Box shadow for depth
+              borderRadius: 10,
+              border: "1px solid rgba(255, 255, 255, 0.18)", // Border for glass effect
+              color: "white",
+              textAlign: "center",
             }}
           >
-            <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
+            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Typography
+                variant="h5"
+                component="h2"
+                align="center"
+                gutterBottom
+              >
                 Carica i tuoi documenti
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => router.push('/upload-documents')}
+                endIcon={<SendIcon />}
+                onClick={() => router.push("/upload-documents")}
+                sx={{ mt: 2 }}
               >
                 Vai alla pagina
               </Button>
@@ -48,19 +83,33 @@ const App = () => {
           </Card>
           <Card
             sx={{
+              minWidth: 275,
               margin: 2,
-              background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-              color: 'white',
+              padding: 2,
+              backgroundColor: "rgba(5, 40, 76, 0.7)", // Background glass effect
+              backdropFilter: "blur(10px)", // Blur effect
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)", // Box shadow for depth
+              borderRadius: 10,
+              border: "1px solid rgba(255, 255, 255, 0.18)", // Border for glass effect
+              color: "white",
+              textAlign: "center",
             }}
           >
-            <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
+            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Typography
+                variant="h5"
+                component="h2"
+                align="center"
+                gutterBottom
+              >
                 Visualizza tutti i tuoi documenti
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => router.push('/view-documents')}
+                endIcon={<Search />}
+                onClick={() => router.push("/view-documents")}
+                sx={{ mt: 2 }}
               >
                 Vai alla pagina
               </Button>
@@ -68,19 +117,33 @@ const App = () => {
           </Card>
           <Card
             sx={{
+              minWidth: 275,
               margin: 2,
-              background: 'linear-gradient(45deg, #66BB6A 30%, #B2FF59 90%)',
-              color: 'white',
+              padding: 2,
+              backgroundColor: "rgba(5, 40, 76, 0.7)", // Background glass effect
+              backdropFilter: "blur(10px)", // Blur effect
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)", // Box shadow for depth
+              borderRadius: 10,
+              border: "1px solid rgba(255, 255, 255, 0.18)", // Border for glass effect
+              color: "white",
+              textAlign: "center",
             }}
           >
-            <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
+            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Typography
+                variant="h5"
+                component="h2"
+                align="center"
+                gutterBottom
+              >
                 Decripta i tuoi documenti
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => router.push('/decrypt-documents')}
+                endIcon={<PrivacyTip />}
+                onClick={() => router.push("/decrypt-documents")}
+                sx={{ mt: 2 }}
               >
                 Vai alla pagina
               </Button>
@@ -90,8 +153,8 @@ const App = () => {
       </Container>
       <footer>
         <Typography variant="body2" align="center" gutterBottom>
-        &copy; {currentYear} GLD Team. Tutti i diritti riservati.
-        MVP - MasterZ x Solana
+          &copy; {currentYear} GLD Team. Tutti i diritti riservati. MVP -
+          MasterZ x Solana
         </Typography>
       </footer>
     </Box>

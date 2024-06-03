@@ -16,14 +16,18 @@
     "@metaplex-foundation/umi": "^0.9.1",
     "@metaplex-foundation/umi-bundle-defaults": "^0.9.1",
     "@metaplex-foundation/umi-uploader-irys": "^0.9.1",
+    "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@next/font": "14.2.3",
     "@solana/web3.js": "^1.91.8",
     "bs58": "^5.0.0",
+    "crypto-js": "^4.2.0",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.3",
     "next": "14.2.3",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "styled-components": "^6.1.11"
   }
 }
