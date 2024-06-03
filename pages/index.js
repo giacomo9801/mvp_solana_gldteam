@@ -44,8 +44,21 @@ const App = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          position: "relative",
         }}
       >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "40%",
+            // left: "30%",
+            right: "70%",
+            transform: "translateY(-50%) scaleX(-1)",
+            zIndex: -1,
+          }}
+        >
+          <img src="/robot.png" alt="Robot" style={{ width: "300px", height: "auto" }} />
+        </Box>
         <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
           <Card
             sx={{
@@ -77,7 +90,7 @@ const App = () => {
                 onClick={() => router.push("/upload-documents")}
                 sx={{ mt: 2 }}
               >
-                Vai alla pagina
+                Carica
               </Button>
             </CardContent>
           </Card>
@@ -111,7 +124,7 @@ const App = () => {
                 onClick={() => router.push("/view-documents")}
                 sx={{ mt: 2 }}
               >
-                Vai alla pagina
+                Visualizza
               </Button>
             </CardContent>
           </Card>
@@ -145,7 +158,7 @@ const App = () => {
                 onClick={() => router.push("/decrypt-documents")}
                 sx={{ mt: 2 }}
               >
-                Vai alla pagina
+                Decripta
               </Button>
             </CardContent>
           </Card>

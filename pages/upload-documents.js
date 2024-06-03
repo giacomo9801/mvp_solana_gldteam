@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import CryptoJS from "crypto-js"; // Import crypto-js
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const connectionUrl = "https://api.devnet.solana.com";
 const commitment = "finalized";
@@ -82,17 +84,36 @@ const UploadDocuments = () => {
       const image = await readFile(selectedImage);
       const myUri = await initializeUmi(image);
       setUploadResult(myUri);
-      console.log("Image upload successful:", myUri);
-
+      console.log("Immagine caricata correttamente: ", myUri);
+  
+      console.log("Ho caricato notify()");
       handleNext();
+    notify("Immagine caricata correttamente ", myUri);
     } catch (err) {
-      setError("Error uploading image: " + err.message);
-      console.error("Error uploading image:", err);
+      setError("Errore nel caricamento dell'immagine: " + err.message);
+      console.error("Errore nel caricamento dell'immagine ", err);
     } finally {
       setLoading(false);
     }
   };
-
+  
+  const notify = (text,link) => toast(
+    <div>
+      {text} <a href={link} style={{ color: "yellow" }} target="_blank" rel="noopener noreferrer">{link}</a>
+    </div>,
+    {
+      position: "top-right",
+      autoClose: true, // Rimuovi il tempo di chiusura automatica
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    }
+  );
+  
+  
   const createMetadata = async () => {
     try {
       const umi = createUmi(connectionUrl, commitment);
@@ -123,6 +144,7 @@ const UploadDocuments = () => {
       setUri(nftUri);
       console.log("Metadata upload successful:", nftUri);
       handleNext();
+      notify("Metadata caricati correttamente: ", nftUri); // Chiamata a notify dopo setUri
     } catch (err) {
       console.error("Error uploading metadata:", err);
     }
@@ -157,9 +179,11 @@ const UploadDocuments = () => {
     });
 
     let result = await tx.sendAndConfirm(umi2);
+    console.log("result: ", result);
     const signature = base58.deserialize(result.signature);
-    console.log(signature);
+    console.log("Signature: ",signature);
     console.log("NFT minted successfully:", result);
+    notify("Documento NFT mintato correttamente!");
     handleNext();
   };
 
@@ -211,13 +235,17 @@ const UploadDocuments = () => {
                 />
               </div>
             )}
+           
             <Button onClick={uploadImage} disabled={loading}>
               {loading ? "Uploading..." : "Upload immagine"}
+             
             </Button>
           </div>
         )}
         {activeStep === 1 && uploadResult && (
+          
           <div>
+            
             <TextField
               label="Titolo documento"
               name="Titolo"
@@ -271,6 +299,7 @@ const UploadDocuments = () => {
           </Button>
         )}
         {error && <Typography color="error">{error}</Typography>}
+        <ToastContainer />
       </header>
     </div>
   );
