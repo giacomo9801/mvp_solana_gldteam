@@ -22,9 +22,12 @@ import {
   Button,
   TextField,
   Typography,
+  Box,
 } from "@mui/material";
 import axios from "axios";
 import CryptoJS from "crypto-js"; // Import crypto-js
+import { ArrowBackIos, AttachFile, AutoAwesome, Backup, DriveFileRenameOutline } from "@mui/icons-material";
+import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -46,6 +49,19 @@ const UploadDocuments = () => {
   });
 
   const steps = ["Carica immagine", "Inserisci i dati", "Mint documento su blockchain"];
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+  
 
   const encryptionKey = "static-encryption-key"; // Static encryption key
   const encryptValue = (value) => {
@@ -204,7 +220,7 @@ const UploadDocuments = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} style={{ backgroundColor: 'white', borderRadius: 10, padding: 10}}>
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -213,16 +229,21 @@ const UploadDocuments = () => {
         </Stepper>
         
         {activeStep === 0 && (
-          <div>
-            <label htmlFor="imageInput">Seleziona la tua immagine: </label>
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10}}>
+            <label htmlFor="imageInput" style={{color: 'black'}}>Seleziona la tua immagine: </label>
             <br />
-            <input
-              id="imageInput"
-              type="file"
-              accept="image/*"
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<AttachFile />}
               onChange={handleImageChange}
-            />
-           
+              style={{width: '30%', marginBlock: 15}}
+            >
+              Seleziona file 
+              <VisuallyHiddenInput id="imageInput" type="file" accept="image/*" />
+            </Button>
             {selectedImage && (
               <div className="image-preview">
                 <br />
@@ -231,70 +252,75 @@ const UploadDocuments = () => {
                   alt="Preview"
                   width={100}
                   height={100}
-                  
+                  style={{marginBottom: 15}}
                 />
               </div>
             )}
-           
-            <Button onClick={uploadImage} disabled={loading}>
+            <Button onClick={uploadImage} disabled={!selectedImage || loading} variant="contained" endIcon={<Backup/>}>
               {loading ? "Uploading..." : "Upload immagine"}
              
             </Button>
-          </div>
+          </Box>
         )}
         {activeStep === 1 && uploadResult && (
-          
-          <div>
-            
-            <TextField
-              label="Titolo documento"
-              name="Titolo"
-              value={metadataValues.Titolo}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Oggetto"
-              name="Oggetto"
-              value={metadataValues.Oggetto}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Descrizione"
-              name="Descrizione"
-              value={metadataValues.Descrizione}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Data"
-              name="Data"
-              type="date"
-              value={metadataValues.Data}
-              onChange={handleInputChange}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              margin="normal"
-            />
-            <Button onClick={createMetadata} disabled={loading}>
-              {loading ? "Caricamento..." : "Crea metadati"}
-            </Button>
-          </div>
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, paddingInline: 10, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10}}>
+            <Typography variant="h5" color={'black'} style={{marginBlock: 10}}>Metadata</Typography>
+              <TextField
+                label="Titolo documento"
+                name="Titolo"
+                value={metadataValues.Titolo}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Oggetto"
+                name="Oggetto"
+                value={metadataValues.Oggetto}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Descrizione"
+                name="Descrizione"
+                value={metadataValues.Descrizione}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Data"
+                name="Data"
+                type="date"
+                value={metadataValues.Data}
+                onChange={handleInputChange}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                margin="normal"
+              />
+              <Button onClick={createMetadata} disabled={loading} variant="contained" endIcon={<DriveFileRenameOutline/>}>
+                {loading ? "Caricamento..." : "Crea metadati"}
+              </Button>
+          </Box>
         )}
         {activeStep === 2 && uri && (
-          <div>
-            <Typography variant="h6">Ready to Mint your NFT!</Typography>
-            <Button onClick={mintNFT} disabled={loading}>
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, paddingInline: 10, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10, alignItems: 'center'}}>
+            <Typography variant="h5" color={'black'} style={{marginBlock: 15}}>Ready to Mint your NFT!</Typography>
+                <Image
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Preview"
+                  width={100}
+                  height={100}
+                  style={{marginBottom: 15}}
+                />
+            <Button onClick={mintNFT} disabled={loading} variant="contained" endIcon={<AutoAwesome/>} style={{width: '50%'}}>
               {loading ? "Minting..." : "Mint NFT"}
             </Button>
-          </div>
+          </Box>
         )}
         {activeStep < steps.length - 1 && (
-          <Button disabled={activeStep === 0} onClick={handleBack}>
+          <Button disabled={activeStep === 0} onClick={handleBack} variant="contained" style={{color: 'white'}} startIcon={<ArrowBackIos/>}>
             Indietro
           </Button>
         )}
