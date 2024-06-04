@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { PrivacyTip, Search } from "@mui/icons-material";
+import NavigationBar from "./components/NavigationBar";
 
 const App = () => {
   const router = useRouter();
@@ -31,7 +32,7 @@ const App = () => {
       }}
     >
       <header>
-        <Typography variant="h2" align="center" gutterBottom>
+        <Typography variant="h2" align="center" gutterBottom marginTop={5}>
           Benvenuto nella tua Dashboard
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>

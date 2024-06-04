@@ -298,7 +298,7 @@
 // export default DecryptDocuments;
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Box, Container } from "@mui/material";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import {
@@ -313,6 +313,8 @@ import wallet from "./wallet.json"; // Assicurati che il percorso sia corretto
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import PDFDocument from "pdfkit/js/pdfkit.standalone"; // Usa la versione standalone
 import blobStream from "blob-stream";
+import { SimCardDownload } from "@mui/icons-material";
+import NavigationBar from "./components/NavigationBar";
 
 const DecryptDocuments = () => {
   const router = useRouter();
@@ -472,17 +474,32 @@ try {
   
 
   return (
-    <div>
-      <Typography variant="h4">Decrypted Metadata</Typography>
+    <Container>
+      <NavigationBar/>
+      <Typography  variant="h3" gutterBottom style={{marginBlock: 20}}>Decrypted Metadata</Typography>
       {decryptedMetadata && (
-        <div>
+        <Box display="flex" flexDirection="column" alignItems="center">
           {decryptedMetadata.map((metadata, index) => (
-            <div key={index}>
-              {metadata.image && (
-                <div>
-                  <img src={metadata.image} alt="NFT Image" style={{ maxWidth: "100%", height: "auto" }} />
-                </div>
-              )}
+            <Box
+              key={index}
+              sx={{
+                margin: 2,
+                padding: 2,
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                width: "100%",
+                maxWidth: 600,
+                backgroundColor: "#fff",
+                color: "#000",
+                flexDirection: 'column',
+                display: 'flex'
+              }}
+            >
+              {metadata.image && 
+                (
+                  <img src={metadata.image} alt="NFT Image" style={{ alignSelf: 'center', maxWidth: "200px", maxHeight: "200px", objectFit: "scale-down", marginBlock: 20}}/>
+                )
+              }
               {metadata.attributes.map((attribute, attrIndex) => (
                 <Typography key={attrIndex} variant="body1">
                   {attribute.trait_type}: {attribute.value}
@@ -492,17 +509,18 @@ try {
                 variant="contained"
                 color="primary"
                 onClick={() => generatePDF(metadata)}
+                endIcon={<SimCardDownload/>}
               >
-                Download documento
+                Download
               </Button>
               <hr />
-            </div>
+            </Box>
           ))}
-        </div>
+        </Box>
       )}
       {loading && <Typography>Loading...</Typography>}
       {error && <Typography color="error">{error}</Typography>}
-    </div>
+    </Container>
   );
 };
 

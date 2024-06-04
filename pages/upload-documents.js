@@ -26,10 +26,13 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import CryptoJS from "crypto-js"; // Import crypto-js
-import { ArrowBackIos, AttachFile, AutoAwesome, Backup, DriveFileRenameOutline } from "@mui/icons-material";
+import { ArrowBackIos, AttachFile, AutoAwesome, Backup, DriveFileRenameOutline, Home } from "@mui/icons-material";
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NavigationBar from "./components/NavigationBar";
+import { useRouter } from "next/router";
+
 
 const connectionUrl = "https://api.devnet.solana.com";
 const commitment = "finalized";
@@ -37,6 +40,7 @@ const commitment = "finalized";
 const UploadDocuments = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [uri, setUri] = useState("");
+  const [completed, setCompleted] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadResult, setUploadResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -47,8 +51,10 @@ const UploadDocuments = () => {
     Descrizione: "",
     Data: "",
   });
+  
+  const router = useRouter();
 
-  const steps = ["Carica immagine", "Inserisci i dati", "Mint documento su blockchain"];
+  const steps = ["Carica immagine", "Inserisci i dati", "Mint documento su blockchain", "Processo Completato"];
 
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -115,7 +121,8 @@ const UploadDocuments = () => {
   
   const notify = (text,link) => toast(
     <div>
-      {text} <a href={link} style={{ color: "yellow" }} target="_blank" rel="noopener noreferrer">{link}</a>
+      {text} 
+      <a href={link} style={{ color: "yellow", marginBlock: 10 }} target="_blank" rel="noopener noreferrer">{link}</a>
     </div>,
     {
       position: "top-right",
@@ -131,6 +138,8 @@ const UploadDocuments = () => {
   
   
   const createMetadata = async () => {
+    setLoading(true);
+
     try {
       const umi = createUmi(connectionUrl, commitment);
       umi.use(irysUploader());
@@ -163,6 +172,8 @@ const UploadDocuments = () => {
       notify("Metadata caricati correttamente: ", nftUri); // Chiamata a notify dopo setUri
     } catch (err) {
       console.error("Error uploading metadata:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -186,21 +197,30 @@ const UploadDocuments = () => {
   const name = "NFTGLD";
 
   const mintNFT = async () => {
-    let tx = createNft(umi2, {
-      symbol: "MVPGLD",
-      mint,
-      name,
-      uri,
-      sellerFeeBasisPoints,
-    });
+    setLoading(true);
 
-    let result = await tx.sendAndConfirm(umi2);
-    console.log("result: ", result);
-    const signature = base58.deserialize(result.signature);
-    console.log("Signature: ",signature);
-    console.log("NFT minted successfully:", result);
-    notify("Documento NFT mintato correttamente!");
-    handleNext();
+    try {
+      let tx = createNft(umi2, {
+        symbol: "MVPGLD",
+        mint,
+        name,
+        uri,
+        sellerFeeBasisPoints,
+      });
+
+      let result = await tx.sendAndConfirm(umi2);
+      console.log("result: ", result);
+      const signature = base58.deserialize(result.signature);
+      console.log("Signature: ",signature);
+      console.log("NFT minted successfully:", result);
+      notify("Documento NFT mintato correttamente!");
+      handleNext();
+      setCompleted(true);
+    } catch (err) {
+      console.error("Error minting NFT:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const readFile = (file) => {
@@ -219,6 +239,7 @@ const UploadDocuments = () => {
 
   return (
     <div className="App">
+      <NavigationBar/>
       <header className="App-header">
         <Stepper activeStep={activeStep} style={{ backgroundColor: 'white', borderRadius: 10, padding: 10}}>
           {steps.map((label, index) => (
@@ -247,12 +268,10 @@ const UploadDocuments = () => {
             {selectedImage && (
               <div className="image-preview">
                 <br />
-                <Image
+                <img
                   src={URL.createObjectURL(selectedImage)}
                   alt="Preview"
-                  width={100}
-                  height={100}
-                  style={{marginBottom: 15}}
+                  style={{ alignSelf: 'center', maxWidth: "200px", maxHeight: "200px", objectFit: "scale-down", marginBottom: 15}}
                 />
               </div>
             )}
@@ -260,6 +279,15 @@ const UploadDocuments = () => {
               {loading ? "Uploading..." : "Upload immagine"}
              
             </Button>
+            {/*<LoadingButton
+              onClick={uploadImage}
+              endIcon={<Backup/>}
+              loading={loading}
+              loadingPosition="end"
+              variant="contained"
+            >
+              <span>Send</span>
+            </LoadingButton>*/}
           </Box>
         )}
         {activeStep === 1 && uploadResult && (
@@ -307,20 +335,26 @@ const UploadDocuments = () => {
         {activeStep === 2 && uri && (
           <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, paddingInline: 10, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10, alignItems: 'center'}}>
             <Typography variant="h5" color={'black'} style={{marginBlock: 15}}>Ready to Mint your NFT!</Typography>
-                <Image
+                <img
                   src={URL.createObjectURL(selectedImage)}
                   alt="Preview"
-                  width={100}
-                  height={100}
-                  style={{marginBottom: 15}}
+                  style={{ alignSelf: 'center', maxWidth: "200px", maxHeight: "200px", objectFit: "scale-down", marginBlock: 15}}
                 />
             <Button onClick={mintNFT} disabled={loading} variant="contained" endIcon={<AutoAwesome/>} style={{width: '50%'}}>
               {loading ? "Minting..." : "Mint NFT"}
             </Button>
           </Box>
         )}
+        {activeStep === 3 && completed && (
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, paddingInline: 10, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10, alignItems: 'center'}}>
+            <Typography variant="h5" color={'black'} style={{marginBlock: 15}}>Documento NFT mintato correttamente!</Typography>
+            <Button onClick={() => router.push("/")} disabled={loading} variant="contained" color="success" endIcon={<Home/>} style={{width: '50%'}}>
+              {"Home"}
+            </Button>
+          </Box>
+        )}
         {activeStep < steps.length - 1 && (
-          <Button disabled={activeStep === 0} onClick={handleBack} variant="contained" style={{color: 'white'}} startIcon={<ArrowBackIos/>}>
+          <Button disabled={activeStep === 0 || loading} onClick={handleBack} variant="contained" style={{color: 'white'}} startIcon={<ArrowBackIos/>}>
             Indietro
           </Button>
         )}
