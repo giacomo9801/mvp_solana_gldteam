@@ -418,9 +418,7 @@ const DecryptDocuments = () => {
   
     doc.moveDown(2);
   
-    // Aggiungi sigillo di autenticazione
 
-  
 // Aggiungi l'immagine se disponibile
 if (metadata.image) {
   try {
