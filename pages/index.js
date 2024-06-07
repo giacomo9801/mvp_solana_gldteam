@@ -15,7 +15,7 @@ import NavigationBar from "./components/NavigationBar";
 const App = () => {
   const router = useRouter();
   const currentYear = new Date().getFullYear();
-  const storedMail = sessionStorage.getItem('email');
+  //const storedMail = sessionStorage.getItem('email');
   return (
     <Box
       sx={{
@@ -37,7 +37,7 @@ const App = () => {
           Benvenuto nella tua Dashboard
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>
-          Ciao {storedMail} 👋
+          Ciao {"tizio"} 👋
         </Typography>
       </header>
       <Container
