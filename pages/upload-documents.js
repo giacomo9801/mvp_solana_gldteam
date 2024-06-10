@@ -22,17 +22,25 @@ import {
   Button,
   TextField,
   Typography,
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 import CryptoJS from "crypto-js"; // Import crypto-js
+import { ArrowBackIos, AttachFile, AutoAwesome, Backup, DriveFileRenameOutline, Home, Search } from "@mui/icons-material";
+import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NavigationBar from "./components/NavigationBar";
+import { useRouter } from "next/router";
+
 import Tesseract from "tesseract.js"; // Import tesseract.js
+import ShowAlert from "./utils/helper";
 
 const connectionUrl = "https://api.devnet.solana.com";
 const commitment = "finalized";
@@ -40,6 +48,7 @@ const commitment = "finalized";
 const UploadDocuments = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [uri, setUri] = useState("");
+  const [completed, setCompleted] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadResult, setUploadResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -51,8 +60,23 @@ const UploadDocuments = () => {
     Descrizione: "",
     Data: "",
   });
+  
+  const router = useRouter();
 
   const steps = ["Carica immagine", "Inserisci i dati", "Mint documento su blockchain"];
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+  
   const standard_image_doc = "https://arweave.net/LG0it6XjCeG4syH4QOpgy3fqQ3UQEmYAPs0yB00xUTw";
 
   const encryptionKey = "static-encryption-key"; // Static encryption key
@@ -107,7 +131,8 @@ const UploadDocuments = () => {
   
   const notify = (text, link) => toast(
     <div>
-      {text} <a href={link} style={{ color: "yellow" }} target="_blank" rel="noopener noreferrer">{link}</a>
+      {text} 
+      <a href={link} style={{ color: "yellow", marginBlock: 10 }} target="_blank" rel="noopener noreferrer">{link}</a>
     </div>,
     {
       position: "top-right",
@@ -122,6 +147,8 @@ const UploadDocuments = () => {
   );
   
   const createMetadata = async () => {
+    setLoading(true);
+
     try {
       const umi = createUmi(connectionUrl, commitment);
       umi.use(irysUploader());
@@ -154,6 +181,8 @@ const UploadDocuments = () => {
       mintNFT(nftUri); // Mint NFT immediately after metadata upload
     } catch (err) {
       console.error("Error uploading metadata:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -188,6 +217,7 @@ const UploadDocuments = () => {
       .catch((error) => {
         console.error("Error extracting text from image:", error);
         setError("Errore nell'estrazione del testo dall'immagine");
+        //ShowAlert("error", "Errore nell'estrazione del testo dall'immagine");
       });
   };
 
@@ -208,23 +238,32 @@ const UploadDocuments = () => {
 
   const name = "NFTGLD";
   const mintNFT = async (nftUri) => {
-    let tx = createNft(umi2, {
-      symbol: "MVPGLD",
-      mint,
-      name,
-      uri: nftUri,
-      sellerFeeBasisPoints,
-    });
+    setLoading(true);
 
-    let result = await tx.sendAndConfirm(umi2);
-    console.log("result: ", result);
-    const signature = base58.deserialize(result.signature);
-    console.log("Signature: ", signature);
-    console.log("NFT minted successfully:", result);
-    const transazione = base58.deserialize(result.signature);
+    try {
+      let tx = createNft(umi2, {
+        symbol: "MVPGLD",
+        mint,
+        name,
+        uri: nftUri,
+        sellerFeeBasisPoints,
+      });
+
+      let result = await tx.sendAndConfirm(umi2);
+      console.log("result: ", result);
+      const signature = base58.deserialize(result.signature);
+      console.log("Signature: ", signature);
+      console.log("NFT minted successfully:", result);
+      const transazione = base58.deserialize(result.signature);
     console.log("Transazione: ", "https://explorer.solana.com/tx/" + transazione[0] + "?cluster=devnet");
     notify("Documento NFT mintato correttamente!", "https://explorer.solana.com/tx/" + transazione[0] + "?cluster=devnet");
-    handleNext();
+      handleNext();
+      setCompleted(true);
+    } catch (err) {
+      console.error("Error minting NFT:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const readFile = (file) => {
@@ -257,8 +296,9 @@ const UploadDocuments = () => {
 
   return (
     <div className="App">
+      <NavigationBar/>
       <header className="App-header">
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} style={{ backgroundColor: 'white', borderRadius: 10, padding: 10}}>
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -267,80 +307,102 @@ const UploadDocuments = () => {
         </Stepper>
 
         {activeStep === 0 && (
-          <div>
-            <label htmlFor="fileInput">Seleziona la tua immagine: </label>
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10}}>
+            <label htmlFor="fileInput" style={{color: 'black'}}>Seleziona la tua immagine: </label>
             <br />
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/*"
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<AttachFile />}
               onChange={handleFileChange}
-            />
-
+              style={{width: '30%', marginBlock: 15}}
+            >
+              Seleziona file 
+              <VisuallyHiddenInput id="fileInput" type="file" accept="image/*" />
+            </Button>
             {selectedFile && (
-              <div className="file-preview">
+              <div className="image-preview">
                 <br />
+                <img
+                  src={URL.createObjectURL(selectedFile)}
+                  alt="Preview"
+                  style={{ alignSelf: 'center', maxWidth: "200px", maxHeight: "200px", objectFit: "scale-down", marginBottom: 15}}
+                />
                 <Typography variant="body1">{selectedFile.name}</Typography>
               </div>
             )}
-
-            <Button onClick={uploadFile} disabled={loading}>
+            <Button onClick={uploadFile} disabled={!selectedFile || loading} variant="contained" endIcon={<Backup/>}>
               {loading ? "Uploading..." : "Upload immagine"}
             </Button>
-          </div>
+            {/*<LoadingButton
+              onClick={uploadImage}
+              endIcon={<Backup/>}
+              loading={loading}
+              loadingPosition="end"
+              variant="contained"
+            >
+              <span>Send</span>
+            </LoadingButton>*/}
+          </Box>
         )}
         {activeStep === 1 && uploadResult && (
-          <div>
-            <TextField
-              label="Titolo documento"
-              name="Titolo"
-              value={metadataValues.Titolo}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Oggetto"
-              name="Oggetto"
-              value={metadataValues.Oggetto}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Descrizione"
-              name="Descrizione"
-              value={metadataValues.Descrizione}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Data"
-              name="Data"
-              type="date"
-              value={metadataValues.Data}
-              onChange={handleInputChange}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              margin="normal"
-            />
-            <Button onClick={handleConfirmMetadata} disabled={loading}>
-              {loading ? "Caricamento..." : "Conferma e crea NFT"}
-            </Button>
-          </div>
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, paddingInline: 10, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10}}>
+            <Typography variant="h5" color={'black'} style={{marginBlock: 10}}>Metadata</Typography>
+              <TextField
+                label="Titolo documento"
+                name="Titolo"
+                value={metadataValues.Titolo}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Oggetto"
+                name="Oggetto"
+                value={metadataValues.Oggetto}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Descrizione"
+                name="Descrizione"
+                value={metadataValues.Descrizione}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Data"
+                name="Data"
+                type="date"
+                value={metadataValues.Data}
+                onChange={handleInputChange}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                margin="normal"
+              />
+              <Button onClick={handleConfirmMetadata} disabled={loading} variant="contained" endIcon={<DriveFileRenameOutline/>}>
+                {loading ? "Caricamento..." : "Crea metadati"}
+              </Button>
+          </Box>
         )}
         {activeStep === 2 && uri && (
-          <div>
-            <Typography variant="h6">NFT creato con successo!</Typography>
-            <Typography variant="body1">Puoi visionare l'NFT mintato nella sezione "Visualizza Documenti".</Typography>
-            <Button variant="contained" color="primary" href="/view-documents">
+          <Box sx={{flexDirection: "column", display: 'flex', borderRadius: 5, backgroundColor: 'white', padding: 5, paddingInline: 10, alignContent: 'center', alignSelf: 'center', marginInline: '20%', marginBlock: 10, alignItems: 'center'}}>
+            <Typography variant="h6" color={'black'} style={{marginBlock: 15}}>NFT creato con successo!</Typography>
+            <Typography variant="body1" color={'black'} style={{marginBlock: 15}}>Puoi visionare l'NFT mintato nella sezione "Visualizza Documenti".</Typography>
+            <Button variant="contained" color="primary" endIcon={<Search/>} href="/view-documents">
               Visualizza
             </Button>
-          </div>
+            <Button onClick={() => router.push("/")} disabled={loading} variant="contained" color="success" endIcon={<Home/>} style={{width: '30%', marginTop: 25}}>
+              {"Home"}
+            </Button>
+          </Box>
         )}
         {activeStep < steps.length - 1 && (
-          <Button disabled={activeStep === 0} onClick={handleBack}>
+          <Button disabled={activeStep === 0 || loading} onClick={handleBack} variant="contained" style={{color: 'white'}} startIcon={<ArrowBackIos/>}>
             Indietro
           </Button>
         )}
@@ -364,8 +426,8 @@ const UploadDocuments = () => {
             <Button onClick={handleCloseDialog} color="primary">
               Modifica
             </Button>
-            <Button onClick={handleConfirm} color="primary" autoFocus>
-              Sì
+            <Button onClick={handleConfirm} color="primary" variant="contained" autoFocus>
+              Conferma
             </Button>
           </DialogActions>
         </Dialog>

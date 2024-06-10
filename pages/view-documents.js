@@ -11,6 +11,7 @@ import {
   signerIdentity,
 } from "@metaplex-foundation/umi";
 import wallet from "./wallet.json"; // Assicurati che il percorso sia corretto
+import NavigationBar from "./components/NavigationBar";
 
 const ViewDocuments = () => {
   const [documents, setDocuments] = useState([]);
@@ -58,8 +59,9 @@ const ViewDocuments = () => {
 
   return (
     <Container>
-      <Typography variant="h4" gutterBottom>
-        Visualizza i tuoi documenti
+      <NavigationBar/>
+      <Typography variant="h3" gutterBottom style={{marginBlock: 20}}>
+        I tuoi documenti
       </Typography>
       {loading ? (
         <Box
@@ -86,6 +88,8 @@ const ViewDocuments = () => {
                 maxWidth: 600,
                 backgroundColor: "#fff",
                 color: "#000",
+                flexDirection: 'column',
+                display: 'flex'
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -96,7 +100,7 @@ const ViewDocuments = () => {
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {doc.attributes.map((attr, index) => (
-                  <span key={index}>
+                  <span key={index} style={{display: 'flex', flexDirection: 'column'}}>
                     <strong>{attr.trait_type}:</strong> {attr.value}
                     {index < doc.attributes.length - 1 && ", "}
                   </span>
@@ -106,8 +110,15 @@ const ViewDocuments = () => {
               <img
                 src={doc.image}
                 alt={doc.name}
-                style={{ maxWidth: "100%" }}
+                style={{
+                  alignSelf: 'center',
+                  maxWidth: "200px",
+                  maxHeight: "200px",
+                  marginBlock: 20,
+                  objectFit: "scale-down"
+                }}
               />
+
             </Box>
           ))}
         </Box>
