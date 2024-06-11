@@ -33,6 +33,10 @@ const ViewDocuments = () => {
         umi.use(signerIdentity(myKeypairSigner));
 
         const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Replace with your public key
+        //INDIRIZZO WALLET RICAVATO DA CHIAVE PRIVATA
+        // const ownerPublicKey = keypair.publicKey  //prendi la chiave pubblica del wallet
+        // console.log("Owner Public Key:", ownerPublicKey);
+
         const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
         console.log("Assets:", assets);
 
@@ -59,8 +63,8 @@ const ViewDocuments = () => {
 
   return (
     <Container>
-      <NavigationBar/>
-      <Typography variant="h3" gutterBottom style={{marginBlock: 20}}>
+      <NavigationBar />
+      <Typography variant="h3" gutterBottom style={{ marginBlock: 20 }}>
         I tuoi documenti
       </Typography>
       {loading ? (
@@ -88,8 +92,8 @@ const ViewDocuments = () => {
                 maxWidth: 600,
                 backgroundColor: "#fff",
                 color: "#000",
-                flexDirection: 'column',
-                display: 'flex'
+                flexDirection: "column",
+                display: "flex",
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -100,7 +104,10 @@ const ViewDocuments = () => {
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {doc.attributes.map((attr, index) => (
-                  <span key={index} style={{display: 'flex', flexDirection: 'column'}}>
+                  <span
+                    key={index}
+                    style={{ display: "flex", flexDirection: "column" }}
+                  >
                     <strong>{attr.trait_type}:</strong> {attr.value}
                     {index < doc.attributes.length - 1 && ", "}
                   </span>
@@ -111,14 +118,13 @@ const ViewDocuments = () => {
                 src={doc.image}
                 alt={doc.name}
                 style={{
-                  alignSelf: 'center',
+                  alignSelf: "center",
                   maxWidth: "200px",
                   maxHeight: "200px",
                   marginBlock: 20,
-                  objectFit: "scale-down"
+                  objectFit: "scale-down",
                 }}
               />
-
             </Box>
           ))}
         </Box>

@@ -14,7 +14,6 @@ import { PrivacyTip, Search } from "@mui/icons-material";
 import NavigationBar from "./components/NavigationBar";
 
 const App = () => {
- 
   const router = useRouter();
   const { walletAddress } = router.query;
   const currentYear = new Date().getFullYear();
@@ -29,13 +28,13 @@ const App = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         overflow: "hidden",
-        backgroundImage: 'url(/backgroundsolana.png)',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
+        backgroundImage: "url(/backgroundsolana.png)",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
         opacity: 0.9,
       }}
     >
-       <header>
+      <header>
         <Typography variant="h2" align="center" gutterBottom marginTop={5}>
           Benvenuto nella tua Dashboard
         </Typography>
@@ -62,7 +61,11 @@ const App = () => {
             zIndex: -1,
           }}
         >
-          <img src="/robot.png" alt="Robot" style={{ width: "300px", height: "auto" }} />
+          <img
+            src="/robot.png"
+            alt="Robot"
+            style={{ width: "300px", height: "auto" }}
+          />
         </Box>
         <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
           <Card
@@ -79,7 +82,13 @@ const App = () => {
               textAlign: "center",
             }}
           >
-            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Typography
                 variant="h5"
                 component="h2"
@@ -113,7 +122,13 @@ const App = () => {
               textAlign: "center",
             }}
           >
-            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Typography
                 variant="h5"
                 component="h2"
@@ -147,7 +162,13 @@ const App = () => {
               textAlign: "center",
             }}
           >
-            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <Typography
                 variant="h5"
                 component="h2"
@@ -181,7 +202,7 @@ const App = () => {
 
 export default App;
 
-//Con password in decript 
+//Con password in decript
 // import React from "react";
 // import { useRouter } from "next/router";
 // import {

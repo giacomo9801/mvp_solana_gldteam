@@ -255,7 +255,9 @@ const Homepage = () => {
           <Container maxWidth="md" sx={{}}>
             <Box textAlign="center" sx={{}}>
               <Typography variant="h2" component="h1" gutterBottom>
-                <span style={{ fontWeight: "bold" }}>Notarize DOC/NFT - MVP</span>
+                <span style={{ fontWeight: "bold" }}>
+                  Notarize DOC/NFT - MVP
+                </span>
               </Typography>
               <Typography variant="h2" component="h1" gutterBottom>
                 <span style={{ fontWeight: "bold" }}>S</span>
