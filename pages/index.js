@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+
 import {
   Button,
   Card,
@@ -13,7 +14,9 @@ import { PrivacyTip, Search } from "@mui/icons-material";
 import NavigationBar from "./components/NavigationBar";
 
 const App = () => {
+ 
   const router = useRouter();
+  const { walletAddress } = router.query;
   const currentYear = new Date().getFullYear();
   //const storedMail = sessionStorage.getItem('email');
   return (
@@ -32,12 +35,12 @@ const App = () => {
         opacity: 0.9,
       }}
     >
-      <header>
+       <header>
         <Typography variant="h2" align="center" gutterBottom marginTop={5}>
           Benvenuto nella tua Dashboard
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>
-          Ciao {"tizio"} 👋
+          Ciao {walletAddress || "tizio"} 👋
         </Typography>
       </header>
       <Container

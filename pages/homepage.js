@@ -1,324 +1,489 @@
 import React, { useState } from "react";
+import CountUp from "react-countup";
 import { useRouter } from "next/router";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import EmailIcon from "@mui/icons-material/Email";
+
 import {
-  Button,
-  TextField,
-  Card,
-  CardContent,
+  IconButton,
+  AppBar,
+  Toolbar,
   Typography,
   Container,
   Box,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemAvatar, Avatar,
+  Button,
+  CssBaseline,
+  Card,
+  CardContent,
+  CardMedia,
+  Grid,
+  TextField,
 } from "@mui/material";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import { CheckCircleOutline } from "@mui/icons-material";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 
+const theme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#90caf9",
+    },
+    secondary: {
+      main: "#f48fb1",
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          "&:hover": {
+            boxShadow: "white 0px 0px 10px 0px",
+            transform: "scale(1.04)",
+          },
+        },
+      },
+    },
+  },
+});
 
-function LockIcon(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width={props.size}
-      height={props.size}
-      {...props}
+const teamMembers = [
+  {
+    name: "Giacomo Corcella",
+    role: "CEO",
+    image: "./giacomo.jpeg",
+    description:
+      "Giacomo ha oltre 20 anni di esperienza nel settore della finanza e della tecnologia.",
+    linkedin: "https://www.linkedin.com/in/giacomocorcella/",
+    email: "giacomocorcella17@gmail.com",
+  },
+  {
+    name: "Davide Porcelluzzi",
+    role: "CTO",
+    image: "./davide.jpg",
+    description:
+      "Davide è un esperto di blockchain e ha guidato progetti tecnologici di grande successo.",
+    linkedin: "https://www.linkedin.com/in/davide-porcelluzzi-969b66171/",
+    email: "Davide.por15@gmail.com",
+  },
+  {
+    name: "Luigi Cafagna",
+    role: "CIO",
+    image: "./luigi.jpg",
+    description:
+      "Luigi ha una vasta esperienza nel marketing digitale e del mondo esport.",
+    linkedin: "https://www.linkedin.com/in/luigicafagna/",
+    email: "luigi.cafagna01@gmail.com",
+  },
+];
+
+const LoginSection = ({
+  handleLogin,
+  handleSpidLogin,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  errorMessage,
+  isLoading,
+}) => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    gap={4}
+    sx={{ mt: 4, width: "99%" }}
+  >
+    <Card
+      sx={{
+        flex: 1,
+        margin: 2,
+        marginBottom: 40,
+        padding: 4,
+        backgroundColor: "rgba(5, 40, 76, 0.7)",
+        backdropFilter: "blur(10px)",
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        borderRadius: 10,
+        border: "1px solid rgba(255, 255, 255, 0.18)",
+        color: "white",
+        textAlign: "center",
+      }}
     >
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 17a3 3 0 0 0 3-3v-1h2v1a5 5 0 0 1-5 5 5 5 0 0 1-5-5v-1h2v1a3 3 0 0 0 3 3zm3-8V6a3 3 0 0 0-6 0v3h-2V6a5 5 0 0 1 10 0v3h-2zM9 5V4a3 3 0 0 1 6 0v1h2v1H7V5h2z" />
-    </svg>
-  );
-}
+      <CardContent>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Login con SPID
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          endIcon={<AccountCircleIcon />}
+          onClick={handleSpidLogin}
+          sx={{ mt: 2 }}
+        >
+          Accedi con SPID
+        </Button>
+      </CardContent>
+    </Card>
+    <Card
+      sx={{
+        flex: 1,
+        margin: 2,
+        marginBottom: 40,
+        padding: 4,
+        backgroundColor: "rgba(5, 40, 76, 0.7)",
+        backdropFilter: "blur(10px)",
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        borderRadius: 10,
+        border: "1px solid rgba(255, 255, 255, 0.18)",
+        color: "white",
+        textAlign: "center",
+      }}
+    >
+      <CardContent>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Login con Email e Password
+        </Typography>
+        <Typography
+          variant="h6"
+          component="h2"
+          gutterBottom
+          sx={{ color: "error.main" }}
+        >
+          {errorMessage}
+        </Typography>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email"
+          name="email"
+          autoComplete="email"
+          autoFocus
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          sx={{
+            input: { color: "white" },
+            label: { color: "white" },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+            },
+          }}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{
+            input: { color: "white" },
+            label: { color: "white" },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+            },
+          }}
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          endIcon={<LockOpenIcon />}
+          onClick={handleLogin}
+          sx={{ mt: 2 }}
+          disabled={isLoading}
+        >
+          {isLoading ? "Login in corso..." : "Accedi"}
+        </Button>
+      </CardContent>
+    </Card>
+  </Box>
+);
 
-const ObjectivesSection = () => {
-	  return (
-	    <Box sx={{ backgroundColor: "#00000059", borderRadius:"50px", padding: 6 }}>
-	      <Container sx={{ marginBottom: 20, marginTop: 20 }}>
-	        <div style={{ display: 'flex', alignItems: 'center' }}>
-			    {/* Immagine a sinistra */}
-			    <img 
-			    	src="/privacy-icon.png" 
-			    	alt="Immagine" 
-			    	style={{ 
-						marginRight: '20px',
-						width: '300px',
-			    	}} 
-			    />
-			
-			    {/* Testo */}
-			    <div>
-			      <Typography variant="h4" align="center" gutterBottom>
-			        
-			      </Typography>
-			      <Typography variant="h3" align="left">
-			        Digitalizziamo i tuoi documenti su Blockchain in maniera privata
-			      </Typography>
-			    </div>
-			  </div>
-	      </Container>
-	      <Container sx={{ marginBottom: 20, marginTop: 20 }}>
-	        <div style={{ display: 'flex', alignItems: 'center' }}>
-			    {/* Testo */}
-			    <div>
-			      <Typography variant="h4" align="center" gutterBottom>
-			        
-			      </Typography>
-			      <Typography variant="h3" align="left">
-			        Diminuizione dei costi di storage
-			      </Typography>
-			    </div>
-			    {/* Immagine a destra */}
-			    <img 
-			    	src="/price.png" 
-			    	alt="Immagine" 
-			    	style={{ 
-						marginRight: '20px',
-						width: '300px',
-			    	}} 
-			    />
-			
-			  </div>
-	      </Container>
-	      <Container sx={{ marginBottom: 20, marginTop: 20 }}>
-	        <div style={{ display: 'flex', alignItems: 'center' }}>
-			    {/* Immagine a sinistra */}
-			    <svg
-			      xmlns="http://www.w3.org/2000/svg"
-			      viewBox="0 0 28 28"
-			      width='300px'
-			      height='300px'
-			      fill="#FFFFFF"
-			    >
-			      <path d="M16,0c-2.21094,0 -4.12109,0.91797 -5.3125,2.40625c-1.19141,1.48828 -1.6875,3.41797 -1.6875,5.5v1.09375h3v-1.09375c0,-1.57812 0.39063,-2.82031 1.03125,-3.625c0.64063,-0.80469 1.51172,-1.28125 2.96875,-1.28125c1.46094,0 2.32813,0.44922 2.96875,1.25c0.64063,0.80078 1.03125,2.05859 1.03125,3.65625v1.09375h3v-1.09375c0,-2.09375 -0.52734,-4.04297 -1.71875,-5.53125c-1.19141,-1.48828 -3.07422,-2.375 -5.28125,-2.375zM9,10c-1.65625,0 -3,1.34375 -3,3v10c0,1.65625 1.34375,3 3,3h14c1.65625,0 3,-1.34375 3,-3v-10c0,-1.65625 -1.34375,-3 -3,-3zM16,15c1.10547,0 2,0.89453 2,2c0,0.73828 -0.40234,1.37109 -1,1.71875v2.28125c0,0.55078 -0.44922,1 -1,1c-0.55078,0 -1,-0.44922 -1,-1v-2.28125c-0.59766,-0.34766 -1,-0.98047 -1,-1.71875c0,-1.10547 0.89453,-2 2,-2z"></path>
-				</svg>
-			
-			    {/* Testo */}
-			    <div>
-			      <Typography variant="h4" align="center" gutterBottom>
-			        
-			      </Typography>
-			      <Typography variant="h3" align="left">
-					Previeni cancellazioni e/o modifiche ai file
-			      </Typography>
-			    </div>
-			  </div>
-	      </Container>
-	      <Container sx={{ marginBottom: 20, marginTop: 20 }}>
-	        <div style={{ display: 'flex', alignItems: 'center' }}>
-			    {/* Testo */}
-			    <div>
-			      <Typography variant="h4" align="center" gutterBottom>
-			        
-			      </Typography>
-			      <Typography variant="h3" align="left">
-			        Certifichiamo l’identità dei soggetti coinvolti
-			      </Typography>
-			    </div>
-			    {/* Immagine a destra */}
-			    <img 
-			    	src="/identity.png" 
-			    	alt="Immagine" 
-			    	style={{ 
-						marginRight: '20px',
-						width: '300px',
-						borderRadius: '30px',
-			    	}} 
-			    />
-			
-			  </div>
-	      </Container>
-	    </Box>
-	    
-	  );
-	};
-	
-	
-const HomePage = () => {
+const Homepage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   const handleLogin = () => {
-    if (email === "gdl@gmail.com" && password === "Ciao") {
-      setErrorMessage(null);
-      sessionStorage.setItem('email', email);
-      router.push("/associaWallet");
-    } else {
-      setErrorMessage("Invalid email or password");
-    }
+    console.log("handleLogin chiamato");
+    setIsLoading(true);
+    setErrorMessage(null); // Resetta il messaggio di errore
+    setTimeout(() => {
+      if (email === "gdl@gmail.com" && password === "Ciao") {
+        sessionStorage.setItem("email", email);
+        router.push("/associaWallet");
+      } else {
+        setErrorMessage("Email o password non validi. Riprova.");
+      }
+      setIsLoading(false);
+    }, 2000);
   };
 
-	const handleSpidLogin = () => {
-    // Implement your SPID login logic here
-    router.push("/spid-login"); // Redirect to SPID login page
+  const handleSpidLogin = () => {
+    router.push("/spid-login");
   };
-  
-
-
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#333",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        backgroundImage: 'url(/backgroundsolana.png)',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        opacity: 0.9,
-      }}
-    >
-      <header>
-        <Typography variant="h1" align="center" marginTop="60px" gutterBottom>
-          NOTARIZE DOC/NFT
-        </Typography>
-        <Typography variant="h6" align="center" gutterBottom>
-			MVP SOLANA PROJECT
-        </Typography>
-      </header>
-      <Container sx={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
-        
-        <ObjectivesSection /> {/* Integra il componente ObjectivesSection */}
-        <Box display="flex" justifyContent="center" alignItems="center" gap={4} sx={{ mt: 4, width: "100%" }}>
-          <Card
-            sx={{
-              flex: 1,
-              margin: 2,
-              marginBottom: 40,
-              padding: 4,
-              backgroundColor: "rgba(5, 40, 76, 0.7)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)",
-              color: "white",
-              textAlign: "center",
-            }}
-          >
-            <CardContent>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+
+      <main>
+        <Box
+          sx={{
+            backgroundImage: `url('/solanawp.png')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "100vh",
+          }}
+        >
+          <Container maxWidth="md" sx={{}}>
+            <Box textAlign="center" sx={{}}>
+              <Typography variant="h2" component="h1" gutterBottom>
+                <span style={{ fontWeight: "bold" }}>Notarize DOC/NFT - MVP</span>
+              </Typography>
+              <Typography variant="h2" component="h1" gutterBottom>
+                <span style={{ fontWeight: "bold" }}>S</span>
+                <img
+                  src="./solanaicon2.png"
+                  alt="Solana"
+                  style={{
+                    verticalAlign: "middle",
+                    height: "1.0em",
+                    marginLeft: "-0.2em",
+                    borderRadius: "100%",
+                    boxShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
+                  }}
+                />
+                <span style={{ marginLeft: "-0.2em", fontWeight: "bold" }}>
+                  LANA
+                </span>
+              </Typography>
+
               <Typography variant="h5" component="h2" gutterBottom>
-                Login con SPID
+                Soluzione Blockchain sviluppato da{"  "}
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    fontStyle: "italic",
+                    color: "yellow",
+                  }}
+                >
+                  GDL Team
+                </span>{" "}
+                per la notarizzazione di documenti in NFT su Blockchain Solana.
               </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<AccountCircleIcon />}
-                onClick={handleSpidLogin}
-                sx={{ mt: 2 }}
-              >
-                Accedi con SPID
-              </Button>
-            </CardContent>
-          </Card>
-          <Card
-            sx={{
-              flex: 1,
-              margin: 2,
-              marginBottom: 40,
-              padding: 4,
-              backgroundColor: "rgba(5, 40, 76, 0.7)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)",
-              color: "white",
-              textAlign: "center",
-            }}
-          >
-            <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
-                Login con Email e Password
-              </Typography>
-              <Typography variant="h6" component="h2" gutterBottom sx={{color: "error.main"}}>
-                {errorMessage}
-              </Typography>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                sx={{
-                  input: { color: "white" },
-                  label: { color: "white" },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white",
-                    },
-                  },
-                }}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                sx={{
-                  input: { color: "white" },
-                  label: { color: "white" },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white",
-                    },
-                  },
-                }}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                endIcon={<LockOpenIcon />}
-                onClick={handleLogin}
-                sx={{ mt: 2 }}
-              >
-                Accedi
-              </Button>
-            </CardContent>
-          </Card>
+            </Box>
+          </Container>
+
+          <Container maxWidth="md" sx={{ mt: 8, mb: 6 }}>
+            <Typography variant="h4" component="h2" gutterBottom>
+              Punti Fondamentali del Progetto
+            </Typography>
+            <Grid container spacing={5}>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  sx={{
+                    backgroundColor: "rgba(5, 40, 76, 0.7)",
+                    color: "white",
+                    borderRadius: 5,
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    image="./digitalize.png"
+                    alt="Img digitalizzazione"
+                  />
+                  <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                      Digitalizzazione
+                    </Typography>
+                    <Typography variant="body2" color="white">
+                      Digitalizza i tuoi documenti e trasformali in NFT per
+                      garantire la loro autenticità
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  sx={{
+                    backgroundColor: "rgba(5, 40, 76, 0.7)",
+                    color: "white",
+                    borderRadius: 5,
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    image="./cost.png"
+                    alt="Img costi ridotti"
+                  />
+                  <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                      Costi ridotti
+                    </Typography>
+                    <Typography variant="body2" color="white">
+                      Riduci i costi di notarizzazione e garantisce la sicurezza
+                      dei tuoi documenti
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  sx={{
+                    backgroundColor: "rgba(5, 40, 76, 0.7)",
+                    color: "white",
+                    borderRadius: 5,
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    image="./delete.png"
+                    alt="Img perdita dati"
+                  />
+                  <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                      Prevenzione perdita dati
+                    </Typography>
+                    <Typography variant="body2" color="white">
+                      Preveniamo la cancellazione/modifica accidentale dei tuoi
+                      documenti grazie alla tecnologia blockchain
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  sx={{
+                    backgroundColor: "rgba(5, 40, 76, 0.7)",
+                    color: "white",
+                    borderRadius: 5,
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    image="./notarize.png"
+                    alt="Scalabilità"
+                  />
+                  <CardContent>
+                    <Typography variant="h5" component="div" gutterBottom>
+                      Certificazione
+                    </Typography>
+                    <Typography variant="body2" color="white">
+                      Certifichiamo i tuoi documenti in modo sicuro e semplice
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Container>
+          <Container maxWidth="md" sx={{ mt: 8, mb: 6 }}>
+            <Typography variant="h4" component="h2" gutterBottom>
+              Il Nostro Team
+            </Typography>
+            <Grid container spacing={4}>
+              {teamMembers.map((member, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card>
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={member.image}
+                      alt={member.name}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {member.name}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {member.role}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {member.description}
+                      </Typography>
+                      <Box display="flex" justifyContent="center" mt={2}>
+                        <IconButton
+                          aria-label="LinkedIn"
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <LinkedInIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="Email"
+                          href={`mailto:${member.email}`}
+                        >
+                          <EmailIcon />
+                        </IconButton>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+            <br />
+            <br />
+            <Typography variant="h5" component="div" gutterBottom>
+              Documenti caricati attualmente:
+            </Typography>
+            <Typography
+              variant="h4"
+              component="span"
+              sx={{ fontWeight: "bold" }}
+            >
+              <CountUp end={876} duration={7} separator="," prefix=" " />
+            </Typography>
+          </Container>
+          <LoginSection
+            handleLogin={handleLogin}
+            handleSpidLogin={handleSpidLogin}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            errorMessage={errorMessage}
+            isLoading={isLoading} // Assicurati che isLoading venga passato correttamente
+          />
         </Box>
-      </Container>
-      <footer>
-        <Typography variant="body2" align="center" gutterBottom>
-          &copy; {new Date().getFullYear()} GLD Team. Tutti i diritti riservati. MVP - MasterZ x Solana
-        </Typography>
-      </footer>
-    </Box>
+      </main>
+      <Box
+        component="footer"
+        sx={{
+          py: 6,
+          mt: "auto",
+          backgroundColor: (theme) => theme.palette.grey[900],
+        }}
+      >
+        <Container maxWidth="md">
+          <Typography variant="body2" align="center" gutterBottom>
+            &copy; {currentYear} GDL Team. Tutti i diritti riservati. MVP -
+            MasterZ x Solana
+          </Typography>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
 
-export default HomePage;
+export default Homepage;

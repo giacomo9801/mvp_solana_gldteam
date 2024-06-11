@@ -328,7 +328,7 @@ const UploadDocuments = () => {
                 <img
                   src={URL.createObjectURL(selectedFile)}
                   alt="Preview"
-                  style={{ alignSelf: 'center', maxWidth: "200px", maxHeight: "200px", objectFit: "scale-down", marginBottom: 15}}
+                  style={{ alignSelf: 'center', maxWidth: "200px", maxHeight: "200px", objectFit: "scale-down", marginBottom: 15, }}
                 />
                 <Typography variant="body1">{selectedFile.name}</Typography>
               </div>

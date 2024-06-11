@@ -12,14 +12,29 @@ import {
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 const WalletAssociation = () => {
-  const router = useRouter();
   const [walletAddress, setWalletAddress] = useState("");
+  const [connecting, setConnecting] = useState(false);
+  const router = useRouter();
 
-  const handleAssociateWallet = () => {
-    // Implement your wallet association logic here
-    console.log("Associating wallet address:", walletAddress);
-    // Redirect to dashboard or another page after successful association
-    router.push("/");
+  const handleAssociateWallet = async () => {
+    try {
+      setConnecting(true);
+      // Connect to Phantom Wallet
+      await window.solana.connect();
+      // Get connected wallet address
+      const connectedAddress = window.solana.publicKey.toString();
+      setWalletAddress(connectedAddress);
+      // Redirect to dashboard or another page after successful association
+      setTimeout(() => {
+        router.push({
+          pathname: "/",
+          query: { walletAddress: connectedAddress },
+        });
+      }, 3000); // Redirect after 3 seconds
+    } catch (error) {
+      console.error("Error connecting to wallet:", error);
+      setConnecting(false);
+    }
   };
 
   return (
@@ -75,9 +90,11 @@ const WalletAssociation = () => {
               autoComplete="wallet-address"
               autoFocus
               value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
+              InputProps={{
+                readOnly: true,
+                style: { color: "white" },
+              }}
               sx={{
-                input: { color: "white" },
                 label: { color: "white" },
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
@@ -93,15 +110,15 @@ const WalletAssociation = () => {
               }}
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               endIcon={<AccountBalanceWalletIcon />}
               onClick={handleAssociateWallet}
+              disabled={connecting}
               sx={{ mt: 2 }}
             >
-              Associa Wallet
+              {connecting ? "Connecting..." : "Associa Wallet"}
             </Button>
           </CardContent>
         </Card>
