@@ -17,7 +17,7 @@ const App = () => {
   const { walletAddress } = router.query;
   const currentYear = new Date().getFullYear();
   const todayDate = new Date().toLocaleDateString();
-  
+
   // Dati fittizi per il riepilogo del profilo
   const email = "example@example.com";
   const wallet = walletAddress || "0x123456789";
@@ -45,7 +45,7 @@ const App = () => {
           Benvenuto nella tua Dashboard
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>
-          Ciao {walletAddress || "tizio"} 👋
+          Ciao {sessionStorage.getItem("wallet")|| walletAddress || "XXX"} 👋
         </Typography>
       </header>
       <Container
@@ -207,16 +207,16 @@ const App = () => {
         }}
       >
         <Typography variant="body2">
-          <strong>Email:</strong> {email}
+          <strong>Email:</strong> {sessionStorage.getItem("email")}
         </Typography>
         <Typography variant="body2">
-          <strong>Wallet:</strong> {wallet}
-        </Typography>
-        <Typography variant="body2">
-          <strong>Data:</strong> {todayDate}
+          <strong>Wallet:</strong> {sessionStorage.getItem("wallet")}
         </Typography>
         <Typography variant="body2">
           <strong>Documenti caricati:</strong> {uploadedDocuments}
+        </Typography>
+        <Typography variant="body2">
+          <strong>Data odierna:</strong> {todayDate}
         </Typography>
       </Box>
       <footer>
@@ -230,7 +230,6 @@ const App = () => {
 };
 
 export default App;
-
 
 //Con password in decript
 // import React from "react";

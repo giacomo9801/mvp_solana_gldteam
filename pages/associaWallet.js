@@ -25,6 +25,7 @@ const WalletAssociation = () => {
       const connectedAddress = window.solana.publicKey.toString();
       setWalletAddress(connectedAddress);
       // Redirect to dashboard or another page after successful association
+      sessionStorage.setItem("wallet", connectedAddress);
       setTimeout(() => {
         router.push({
           pathname: "/",
