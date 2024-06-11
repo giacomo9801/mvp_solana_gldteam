@@ -1,6 +1,5 @@
 import React from "react";
 import { useRouter } from "next/router";
-
 import {
   Button,
   Card,
@@ -17,7 +16,13 @@ const App = () => {
   const router = useRouter();
   const { walletAddress } = router.query;
   const currentYear = new Date().getFullYear();
-  //const storedMail = sessionStorage.getItem('email');
+  const todayDate = new Date().toLocaleDateString();
+  
+  // Dati fittizi per il riepilogo del profilo
+  const email = "example@example.com";
+  const wallet = walletAddress || "0x123456789";
+  const uploadedDocuments = 5;
+
   return (
     <Box
       sx={{
@@ -32,6 +37,7 @@ const App = () => {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         opacity: 0.9,
+        position: "relative",
       }}
     >
       <header>
@@ -55,7 +61,6 @@ const App = () => {
           sx={{
             position: "absolute",
             top: "40%",
-            // left: "30%",
             right: "70%",
             transform: "translateY(-50%) scaleX(-1)",
             zIndex: -1,
@@ -73,11 +78,11 @@ const App = () => {
               minWidth: 275,
               margin: 2,
               padding: 2,
-              backgroundColor: "rgba(5, 40, 76, 0.7)", // Background glass effect
-              backdropFilter: "blur(10px)", // Blur effect
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)", // Box shadow for depth
+              backgroundColor: "rgba(5, 40, 76, 0.7)",
+              backdropFilter: "blur(10px)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
               borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)", // Border for glass effect
+              border: "1px solid rgba(255, 255, 255, 0.18)",
               color: "white",
               textAlign: "center",
             }}
@@ -113,11 +118,11 @@ const App = () => {
               minWidth: 275,
               margin: 2,
               padding: 2,
-              backgroundColor: "rgba(5, 40, 76, 0.7)", // Background glass effect
-              backdropFilter: "blur(10px)", // Blur effect
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)", // Box shadow for depth
+              backgroundColor: "rgba(5, 40, 76, 0.7)",
+              backdropFilter: "blur(10px)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
               borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)", // Border for glass effect
+              border: "1px solid rgba(255, 255, 255, 0.18)",
               color: "white",
               textAlign: "center",
             }}
@@ -153,11 +158,11 @@ const App = () => {
               minWidth: 275,
               margin: 2,
               padding: 2,
-              backgroundColor: "rgba(5, 40, 76, 0.7)", // Background glass effect
-              backdropFilter: "blur(10px)", // Blur effect
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)", // Box shadow for depth
+              backgroundColor: "rgba(5, 40, 76, 0.7)",
+              backdropFilter: "blur(10px)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
               borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)", // Border for glass effect
+              border: "1px solid rgba(255, 255, 255, 0.18)",
               color: "white",
               textAlign: "center",
             }}
@@ -190,6 +195,30 @@ const App = () => {
           </Card>
         </Box>
       </Container>
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          padding: 2,
+          borderRadius: 5,
+          color: "white",
+        }}
+      >
+        <Typography variant="body2">
+          <strong>Email:</strong> {email}
+        </Typography>
+        <Typography variant="body2">
+          <strong>Wallet:</strong> {wallet}
+        </Typography>
+        <Typography variant="body2">
+          <strong>Data:</strong> {todayDate}
+        </Typography>
+        <Typography variant="body2">
+          <strong>Documenti caricati:</strong> {uploadedDocuments}
+        </Typography>
+      </Box>
       <footer>
         <Typography variant="body2" align="center" gutterBottom>
           &copy; {currentYear} GLD Team. Tutti i diritti riservati. MVP -
@@ -201,6 +230,7 @@ const App = () => {
 };
 
 export default App;
+
 
 //Con password in decript
 // import React from "react";

@@ -225,7 +225,7 @@ const Homepage = () => {
     setIsLoading(true);
     setErrorMessage(null); // Resetta il messaggio di errore
     setTimeout(() => {
-      if (email === "gdl@gmail.com" && password === "Ciao") {
+      if (email === "gdl@gmail.com" && password === "Test") {
         sessionStorage.setItem("email", email);
         router.push("/associaWallet");
       } else {
