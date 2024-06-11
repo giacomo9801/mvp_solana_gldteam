@@ -454,7 +454,13 @@ const Homepage = () => {
               component="span"
               sx={{ fontWeight: "bold" }}
             >
-              <CountUp end={876} duration={7} separator="," prefix=" " />
+              <CountUp
+                end={32673489}
+                duration={10}
+                separator=","
+                prefix="📄"
+                delay={1}
+              />
             </Typography>
           </Container>
           <LoginSection
