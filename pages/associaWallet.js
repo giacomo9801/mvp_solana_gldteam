@@ -50,9 +50,9 @@ const WalletAssociation = () => {
         justifyContent: "center",
         alignItems: "center",
         overflow: "hidden",
-        backgroundImage: 'url(/backgroundsolana.png)',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
+        backgroundImage: "url(/solanawp.png)",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
         opacity: 0.9,
       }}
     >

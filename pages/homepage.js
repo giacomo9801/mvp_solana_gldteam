@@ -75,7 +75,9 @@ const App = () => {
       setWallet(
         sessionStorage.getItem("wallet") || walletAddress || "0x123456789"
       );
-      setSubscriptionPlan(sessionStorage.getItem("subscriptionPlan") || "NoSubscriptionsFound");
+      setSubscriptionPlan(
+        sessionStorage.getItem("subscriptionPlan") || "NoSubscriptionsFound"
+      );
     }
   }, [walletAddress]);
 
@@ -107,7 +109,7 @@ const App = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         overflow: "hidden",
-        backgroundImage: "url(/backgroundsolana.png)",
+        backgroundImage: "url(/solanawp.png)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         opacity: 0.9,
@@ -116,10 +118,10 @@ const App = () => {
     >
       <header>
         <Typography variant="h2" align="center" gutterBottom marginTop={5}>
-          Benvenuto nella tua Dashboard
+          Dashboard
         </Typography>
         <Typography variant="h6" align="center" gutterBottom>
-          Ciao {wallet} 👋
+          Ciao {email} 👋
         </Typography>
       </header>
       <Container
@@ -303,10 +305,10 @@ const App = () => {
         )}
       </Box>
       <footer>
-      <Typography variant="body2" align="center" gutterBottom>
-            &copy; {currentYear} GLD Team. Tutti i diritti riservati. MVP -
-            MasterZ x Solana
-          </Typography>
+        <Typography variant="body2" align="center" gutterBottom>
+          &copy; {currentYear} GLD Team. Tutti i diritti riservati. MVP -
+          MasterZ x Solana
+        </Typography>
       </footer>
     </Box>
   );

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CountUp from "react-countup";
 import { useRouter } from "next/router";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
-
 import {
   IconButton,
   AppBar,
@@ -22,6 +21,8 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import "aos/dist/aos.css";
+import AOS from "aos";
 
 const theme = createTheme({
   palette: {
@@ -50,28 +51,25 @@ const theme = createTheme({
 const teamMembers = [
   {
     name: "Giacomo Corcella",
-    role: "CEO",
+    role: "CEO (Chief Executive Officer)",
     image: "./giacomo.jpeg",
-    description:
-      "Giacomo ha oltre 20 anni di esperienza nel settore della finanza e della tecnologia.",
+    description: "Esperto Blockchain e Dev in EY",
     linkedin: "https://www.linkedin.com/in/giacomocorcella/",
     email: "giacomocorcella17@gmail.com",
   },
   {
     name: "Davide Porcelluzzi",
-    role: "CTO",
+    role: "CTO (Chief Technology Officer)",
     image: "./davide.jpg",
-    description:
-      "Davide è un esperto di blockchain e ha guidato progetti tecnologici di grande successo.",
+    description: "xxx e Dev in EY.",
     linkedin: "https://www.linkedin.com/in/davide-porcelluzzi-969b66171/",
     email: "Davide.por15@gmail.com",
   },
   {
     name: "Luigi Cafagna",
-    role: "CIO",
+    role: "CIO (Chief Information Officer)",
     image: "./luigi.jpg",
-    description:
-      "Luigi ha una vasta esperienza nel marketing digitale e del mondo esport.",
+    description: "xxx e Dev in Accenture.",
     linkedin: "https://www.linkedin.com/in/luigicafagna/",
     email: "luigi.cafagna01@gmail.com",
   },
@@ -108,6 +106,7 @@ const LoginSection = ({
         color: "white",
         textAlign: "center",
       }}
+      data-aos="fade-up"
     >
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
@@ -138,6 +137,7 @@ const LoginSection = ({
         color: "white",
         textAlign: "center",
       }}
+      data-aos="fade-up"
     >
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
@@ -220,6 +220,13 @@ const Homepage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+    });
+  }, []);
+
   const handleLogin = () => {
     console.log("handleLogin chiamato");
     setIsLoading(true);
@@ -251,6 +258,7 @@ const Homepage = () => {
             backgroundPosition: "center",
             minHeight: "100vh",
           }}
+          data-aos="fade"
         >
           <Container maxWidth="md" sx={{}}>
             <Box textAlign="center" sx={{}}>
@@ -293,7 +301,7 @@ const Homepage = () => {
             </Box>
           </Container>
 
-          <Container maxWidth="md" sx={{ mt: 8, mb: 6 }}>
+          <Container maxWidth="md" sx={{ mt: 8, mb: 6 }} data-aos="fade">
             <Typography variant="h4" component="h2" gutterBottom>
               Punti Fondamentali del Progetto
             </Typography>
@@ -305,6 +313,7 @@ const Homepage = () => {
                     color: "white",
                     borderRadius: 5,
                   }}
+                  data-aos="fade-right"
                 >
                   <CardMedia
                     component="img"
@@ -330,6 +339,7 @@ const Homepage = () => {
                     color: "white",
                     borderRadius: 5,
                   }}
+                  data-aos="fade-left"
                 >
                   <CardMedia
                     component="img"
@@ -355,6 +365,7 @@ const Homepage = () => {
                     color: "white",
                     borderRadius: 5,
                   }}
+                  data-aos="fade-right"
                 >
                   <CardMedia
                     component="img"
@@ -380,6 +391,7 @@ const Homepage = () => {
                     color: "white",
                     borderRadius: 5,
                   }}
+                  data-aos="fade-left"
                 >
                   <CardMedia
                     component="img"
@@ -399,14 +411,14 @@ const Homepage = () => {
               </Grid>
             </Grid>
           </Container>
-          <Container maxWidth="md" sx={{ mt: 8, mb: 6 }}>
+          <Container maxWidth="md" sx={{ mt: 8, mb: 6 }} data-aos="fade">
             <Typography variant="h4" component="h2" gutterBottom>
               Il Nostro Team
             </Typography>
             <Grid container spacing={4}>
               {teamMembers.map((member, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Card>
+                  <Card data-aos="fade-up">
                     <CardMedia
                       component="img"
                       height="200"
@@ -453,6 +465,7 @@ const Homepage = () => {
               variant="h4"
               component="span"
               sx={{ fontWeight: "bold" }}
+              data-aos="fade"
             >
               <CountUp
                 end={32673489}
@@ -472,6 +485,7 @@ const Homepage = () => {
             setPassword={setPassword}
             errorMessage={errorMessage}
             isLoading={isLoading} // Assicurati che isLoading venga passato correttamente
+            data-aos="fade"
           />
         </Box>
       </main>
@@ -482,6 +496,7 @@ const Homepage = () => {
           mt: "auto",
           backgroundColor: (theme) => theme.palette.grey[900],
         }}
+        data-aos="fade"
       >
         <Container maxWidth="md">
           <Typography variant="body2" align="center" gutterBottom>
@@ -495,4 +510,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-

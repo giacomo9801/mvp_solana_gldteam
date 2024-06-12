@@ -10,6 +10,8 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
+import Atropos from "atropos/react";
+import "atropos/css"; // Importa i CSS di Atropos
 
 const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState(initialSelectedPlan);
@@ -86,74 +88,80 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           sx={{ display: "flex", justifyContent: "center", gap: 2 }}
         >
           {plans.map((plan, index) => (
-            <Card
+            <Atropos
               key={plan.value}
-              sx={{
-                width: index === 1 ? 250 : 200,
-                margin: 2,
-                padding: 2,
-                backgroundColor:
-                  selectedPlan === plan.value
-                    ? "rgba(0, 123, 255, 0.2)"
-                    : "rgba(5, 40, 76, 0.7)",
-                borderRadius: 4,
-                textAlign: "center",
-                boxShadow:
-                  selectedPlan === plan.value
-                    ? "0 8px 32px 0 rgba(31, 38, 135, 0.37)"
-                    : "none",
-                color: "#fff",
-              }}
+              activeOffset={20} // Riduce l'intensità dell'effetto
+              shadowScale={0.8} // Riduce l'intensità dell'ombra
+              className="atropos-card"
             >
-              <CardContent>
-                {index === 1 && (
-                  <Box
-                    sx={{
-                      backgroundColor: "gold",
-                      borderRadius: 2,
-                      padding: "2px 8px",
-                      color: "#000",
-                      fontWeight: "bold",
+              <Card
+                sx={{
+                  width: index === 1 ? 250 : 200,
+                  margin: 2,
+                  padding: 2,
+                  backgroundColor:
+                    selectedPlan === plan.value
+                      ? "rgba(0, 123, 255, 0.2)"
+                      : "rgba(5, 40, 76, 0.7)",
+                  borderRadius: 4,
+                  textAlign: "center",
+                  boxShadow:
+                    selectedPlan === plan.value
+                      ? "0 8px 32px 0 rgba(31, 38, 135, 0.37)"
+                      : "none",
+                  color: "#fff",
+                }}
+              >
+                <CardContent>
+                  {index === 1 && (
+                    <Box
+                      sx={{
+                        backgroundColor: "gold",
+                        borderRadius: 2,
+                        padding: "2px 8px",
+                        color: "#000",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Il più richiesto
+                    </Box>
+                  )}
+                  <img
+                    src={plan.image}
+                    alt={`${plan.name} plan`}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      borderRadius: "4px",
+                      marginBottom: "1rem",
                     }}
-                  >
-                    Il più richiesto
-                  </Box>
-                )}
-                <img
-                  src={plan.image}
-                  alt={`${plan.name} plan`}
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    borderRadius: "4px",
-                    marginBottom: "1rem",
-                  }}
-                />
-                <Typography variant="h5" gutterBottom>
-                  {plan.name}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  {plan.price}
-                </Typography>
-                <Radio
-                  defaultChecked={selectedPlan === plan.value}
-                  onChange={handleSelectPlan}
-                  value={plan.value}
-                  name="subscriptionPlan"
-                  sx={{
-                    color: "#fff",
-                    "&.Mui-checked": {
+                  />
+                  <Typography variant="h5" gutterBottom>
+                    {plan.name}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    {plan.price}
+                  </Typography>
+                  <Radio
+                    defaultChecked={selectedPlan === plan.value}
+                    onChange={handleSelectPlan}
+                    value={plan.value}
+                    name="subscriptionPlan"
+                    sx={{
                       color: "#fff",
-                    },
-                  }}
-                />
-                {plan.benefits.map((benefit, index) => (
-                  <Box key={index} sx={{ mb: 1 }}>
-                    • {benefit}
-                  </Box>
-                ))}
-              </CardContent>
-            </Card>
+                      "&.Mui-checked": {
+                        color: "#fff",
+                      },
+                    }}
+                  />
+                  {plan.benefits.map((benefit, index) => (
+                    <Box key={index} sx={{ mb: 1 }}>
+                      • {benefit}
+                    </Box>
+                  ))}
+                </CardContent>
+              </Card>
+            </Atropos>
           ))}
         </RadioGroup>
         {selectedPlan && (

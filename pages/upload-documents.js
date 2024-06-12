@@ -72,7 +72,7 @@ const UploadDocuments = () => {
   const router = useRouter();
 
   const steps = [
-    "Carica immagine",
+    "Carica documento",
     "Inserisci i dati",
     "Mint documento su blockchain",
   ];
@@ -114,12 +114,11 @@ const UploadDocuments = () => {
   }
 
   const uploadFile = async () => {
-    
     setLoading(true);
     setError(null);
     try {
       const ownersession = sessionStorage.getItem("wallet", wallet);
-    console.log("Wallet: ", ownersession);
+      console.log("Wallet: ", ownersession);
       const assets = await fetchAllDigitalAssetByOwner(
         umi2,
         ownersession
@@ -361,7 +360,7 @@ const UploadDocuments = () => {
             }}
           >
             <label htmlFor="fileInput" style={{ color: "black" }}>
-              Seleziona la tua immagine:{" "}
+              Seleziona File:{" "}
             </label>
             <br />
             <Button
@@ -403,7 +402,7 @@ const UploadDocuments = () => {
               variant="contained"
               endIcon={<Backup />}
             >
-              {loading ? "Uploading..." : "Upload immagine"}
+              {loading ? "Uploading..." : "Upload"}
             </Button>
             {/*<LoadingButton
               onClick={uploadImage}
