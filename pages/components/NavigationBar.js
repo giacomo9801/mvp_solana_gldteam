@@ -1,61 +1,73 @@
-import React, { useState, useEffect } from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
-import {
-  DriveFileRenameOutline,
-  Home,
-  SimCardDownload,
-} from "@mui/icons-material";
+import React from "react";
+import { AppBar, Toolbar, Button, Box } from "@mui/material";
+import { Home, Visibility, LockOpen } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { css, keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
+
+// Definisce l'animazione di rimbalzo più lenta e meno marcata
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-2.5px);
+  }
+`;
+
+// Crea un bottone con lo stile di rimbalzo
+const BounceButton = styled(Button)`
+  color: white;
+  font-weight: bold;
+  margin: 0 16px;
+  transition: color 0.3s ease-in-out;
+  &:hover {
+    color: #17162A; // Colore al passaggio del mouse
+    text-decoration: underline;
+    animation: ${bounce} 1s;
+  }
+`;
 
 function NavigationBar() {
   const router = useRouter();
 
   return (
-    <Container>
-      <Box
-        px={{ xs: 5, sm: 5, lg: 5 }}
-        my={2}
-        mx={3}
-        width={"85%"}
-        borderRadius={25}
-        shadow={"md"}
-        color={"black"}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        left={0}
-        zIndex={3}
-        sx={() => ({
-          backgroundColor: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: `saturate(200%) blur(30px)`,
-          flexDirection: "row",
-          display: "flex",
-        })}
-      >
-        <Typography variant="h6" gutterBottom style={{ marginBlock: 20 }}>
-          Notarize Doc
-        </Typography>
-        <Box>
-          <Button
-            // onClick={() => router.push("/")}
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{
+        backgroundColor: "transparent",
+        backdropFilter: "blur(20px)",
+        borderRadius: 2,
+        padding: 1,
+      }}
+    >
+      <Toolbar>
+        <Box display="flex" justifyContent="center" alignItems="center" sx={{ flexGrow: 1 }}>
+          <BounceButton
             onClick={() => router.push("/homepage")}
-            variant="text"
-            color="primary"
             startIcon={<Home />}
           >
-            Home
-          </Button>
-          <Button
-            variant="text"
-            color="primary"
-            onClick={() => router.push("/upload-documents")}
-            startIcon={<DriveFileRenameOutline />}
+            Homepage
+          </BounceButton>
+          <BounceButton
+            onClick={() => router.push("/view-documents")}
+            startIcon={<Visibility />}
           >
-            Notarize
-          </Button>
+            Visualizza Documenti
+          </BounceButton>
+          <BounceButton
+            onClick={() => router.push("/decrypt-documents")}
+            startIcon={<LockOpen />}
+          >
+            Decripta Documenti
+          </BounceButton>
         </Box>
-      </Box>
-    </Container>
+      </Toolbar>
+    </AppBar>
   );
 }
 
