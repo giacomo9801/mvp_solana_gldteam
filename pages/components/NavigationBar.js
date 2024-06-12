@@ -37,7 +37,8 @@ function NavigationBar() {
         </Typography>
         <Box>
           <Button
-            onClick={() => router.push("/")}
+            // onClick={() => router.push("/")}
+            onClick={() => router.push("/homepage")}
             variant="text"
             color="primary"
             startIcon={<Home />}

@@ -28,10 +28,11 @@ const WalletAssociation = () => {
       sessionStorage.setItem("wallet", connectedAddress);
       setTimeout(() => {
         router.push({
-          pathname: "/",
+          // pathname: "/",
+          pathname: "/homepage",
           query: { walletAddress: connectedAddress },
         });
-      }, 3000); // Redirect after 3 seconds
+      }, 2000); // Redirect after 2 seconds
     } catch (error) {
       console.error("Error connecting to wallet:", error);
       setConnecting(false);

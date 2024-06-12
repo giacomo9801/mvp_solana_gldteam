@@ -17,6 +17,7 @@ const ViewDocuments = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ownerPublicKey, setOwnerPublicKey] = useState(null);
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -32,12 +33,18 @@ const ViewDocuments = () => {
         const myKeypairSigner = createSignerFromKeypair(umi, keypair);
         umi.use(signerIdentity(myKeypairSigner));
 
-        const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Replace with your public key
+        const walletAddress = sessionStorage.getItem("wallet");
+        // const ownerPublicKey = "Akkx5jEA1m3yiG5jAnmJUuzaWccpUGZTFHWEvk5rsDzw" NUOVO
+        // const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Replace with your public key, VECCHIO
+        //ricavo wallet da storage
+        // const ownerPublicKey = sessionStorage.getItem("wallet");
+        // console.log("Owner Public Key from storage:", ownerPublicKey);
         //INDIRIZZO WALLET RICAVATO DA CHIAVE PRIVATA
         // const ownerPublicKey = keypair.publicKey  //prendi la chiave pubblica del wallet
         // console.log("Owner Public Key:", ownerPublicKey);
+        setOwnerPublicKey(walletAddress);
 
-        const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
+        const assets = await fetchAllDigitalAssetByOwner(umi, walletAddress);
         console.log("Assets:", assets);
 
         const documentsData = await Promise.all(
@@ -78,6 +85,11 @@ const ViewDocuments = () => {
         </Box>
       ) : error ? (
         <Typography color="error">{error}</Typography>
+      ) : documents.length === 0 ? (
+        <Typography variant="h6" gutterBottom>
+          Per il wallet {ownerPublicKey} non sono stati trovati documenti
+          caricati.
+        </Typography>
       ) : (
         <Box display="flex" flexDirection="column" alignItems="center">
           {documents.map((doc, index) => (

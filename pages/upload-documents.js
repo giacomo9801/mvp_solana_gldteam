@@ -114,12 +114,16 @@ const UploadDocuments = () => {
   }
 
   const uploadFile = async () => {
+    
     setLoading(true);
     setError(null);
     try {
+      const ownersession = sessionStorage.getItem("wallet", wallet);
+    console.log("Wallet: ", ownersession);
       const assets = await fetchAllDigitalAssetByOwner(
         umi2,
-        "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"
+        ownersession
+        // "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"
       );
       console.log(assets[0]);
       const res = await axios.get(

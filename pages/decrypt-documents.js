@@ -337,7 +337,8 @@ const DecryptDocuments = () => {
         const myKeypairSigner = createSignerFromKeypair(umi, keypair);
         umi.use(signerIdentity(myKeypairSigner));
 
-        const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Sostituisci con la tua chiave pubblica
+        const ownerPublicKey = sessionStorage.getItem("wallet");
+        // const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Sostituisci con la tua chiave pubblica
         const assets = await fetchAllDigitalAssetByOwner(umi, ownerPublicKey);
         console.log("Assets:", assets);
 
