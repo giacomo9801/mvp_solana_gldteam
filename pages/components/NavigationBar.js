@@ -1,9 +1,11 @@
 import React from "react";
 import { AppBar, Toolbar, Button, Box } from "@mui/material";
-import { Home, Visibility, LockOpen } from "@mui/icons-material";
+import { Home, Visibility, LockOpen,Search, PrivacyTip} from "@mui/icons-material";
+import SendIcon from "@mui/icons-material/Send";
 import { useRouter } from "next/router";
 import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+
 
 // Definisce l'animazione di rimbalzo più lenta e meno marcata
 const bounce = keyframes`
@@ -54,14 +56,20 @@ function NavigationBar() {
             Homepage
           </BounceButton>
           <BounceButton
+            onClick={() => router.push("/upload-documents")}
+            startIcon={<SendIcon />}
+          >
+            Mint Documenti
+          </BounceButton>
+          <BounceButton
             onClick={() => router.push("/view-documents")}
-            startIcon={<Visibility />}
+            startIcon={<Search />}
           >
             Visualizza Documenti
           </BounceButton>
           <BounceButton
             onClick={() => router.push("/decrypt-documents")}
-            startIcon={<LockOpen />}
+            startIcon={<PrivacyTip />}
           >
             Decripta Documenti
           </BounceButton>
