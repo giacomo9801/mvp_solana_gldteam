@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
   Button,
@@ -21,6 +21,7 @@ const WalletAssociation = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [connecting, setConnecting] = useState(false);
   const [airdropInProgress, setAirdropInProgress] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(true); // Stato per la verifica del login
   const router = useRouter();
 
   const keypair = Keypair.fromSecretKey(new Uint8Array(wallet));
@@ -28,6 +29,15 @@ const WalletAssociation = () => {
     "https://api.devnet.solana.com",
     "finalized"
   );
+
+  useEffect(() => {
+    const verifylogin = sessionStorage.getItem("verifylogin");
+    if (verifylogin !== "true") {
+      router.push("/");
+    } else {
+      setIsVerifying(false); // Verifica completata
+    }
+  }, [router]);
 
   const handleAssociateWallet = async () => {
     try {
@@ -39,10 +49,11 @@ const WalletAssociation = () => {
       setWalletAddress(connectedAddress);
       // Store the wallet address in session storage
       sessionStorage.setItem("wallet", connectedAddress);
+      sessionStorage.setItem("verifywallet", "true");
       // Request airdrop
       await handleAirdrop(connectedAddress);
     } catch (error) {
-      console.error("Error connecting to wallet:", error);
+      console.error("Errore nella connessione al wallet:", error);
       setConnecting(false);
     }
   };
@@ -56,7 +67,7 @@ const WalletAssociation = () => {
         1 * LAMPORTS_PER_SOL
       );
       console.log(
-        `Perfetto! Controlla la tua transazione: https://explorer.solana.com/tx/${airdropSignature}?cluster=devnet`
+        `Airdrop OK! Transazione: https://explorer.solana.com/tx/${airdropSignature}?cluster=devnet`
       );
 
       toast.info("Airdrop Ricevuto!");
@@ -71,10 +82,28 @@ const WalletAssociation = () => {
 
       setAirdropInProgress(false);
     } catch (err) {
-      console.error("Error with airdrop:", err);
+      console.error("Errore Airdrop:", err);
       setAirdropInProgress(false);
     }
   };
+
+  // Mostra un caricamento fino al completamento della verifica
+  if (isVerifying) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          backgroundColor: "#333",
+          color: "#fff",
+        }}
+      >
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -177,6 +206,7 @@ const WalletAssociation = () => {
 };
 
 export default WalletAssociation;
+
 
 // import React, { useState } from "react";
 // import { useRouter } from "next/router";

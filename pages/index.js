@@ -109,10 +109,27 @@ const LoginSection = ({
       data-aos="fade-up"
     >
       <CardContent>
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{
+            backgroundColor: "yellow",
+            color: "black",
+            fontWeight: "bold",
+            borderRadius: 1,
+            padding: 1,
+            marginBottom: 2,
+            display: "inline-block",
+          }}
+        >
+          Work in progress...
+        </Typography>
         <Typography variant="h5" component="h2" gutterBottom>
           Login con SPID
         </Typography>
         <Button
+          //disabilitalo
+          disabled
           variant="contained"
           color="primary"
           endIcon={<AccountCircleIcon />}
@@ -145,6 +162,7 @@ const LoginSection = ({
         </Typography>
         <Typography
           variant="h6"
+          
           component="h2"
           gutterBottom
           sx={{ color: "error.main" }}
@@ -220,8 +238,6 @@ const Homepage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
 
-  
-
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -236,6 +252,8 @@ const Homepage = () => {
     setTimeout(() => {
       if (email === "gld@gmail.com" && password === "Test") {
         sessionStorage.setItem("email", email);
+        sessionStorage.setItem("verifylogin", "true");
+        console.log ("Valore di verifylogin in index: ", sessionStorage.getItem("verifylogin"));
         router.push("/associaWallet");
       } else {
         setErrorMessage("Email o password non validi. Riprova.");

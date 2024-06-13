@@ -45,6 +45,8 @@ const ViewDocuments = () => {
         setOwnerPublicKey(walletAddress);
 
         const assets = await fetchAllDigitalAssetByOwner(umi, walletAddress);
+        console.log("UMI:", umi);
+        console.log("walletAddress:", walletAddress);
         console.log("Assets:", assets);
 
         const documentsData = await Promise.all(

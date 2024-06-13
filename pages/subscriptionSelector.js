@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
   Box,
   Card,
   CardContent,
+  CircularProgress,
   Container,
   Button,
   Radio,
@@ -15,7 +16,21 @@ import "atropos/css"; // Importa i CSS di Atropos
 
 const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState(initialSelectedPlan);
+  const [isVerifying, setIsVerifying] = useState(true); // Stato per la verifica del login e wallet
   const router = useRouter();
+
+  useEffect(() => {
+    const verifylogin = sessionStorage.getItem("verifylogin") === "true";
+    const verifywallet = sessionStorage.getItem("verifywallet") === "true";
+    console.log("Valore di verifylogin nel componente:", verifylogin); // Debug
+    console.log("Valore di verifywallet nel componente:", verifywallet); // Debug
+
+    if (!verifylogin || !verifywallet) {
+      router.push("/");
+    } else {
+      setIsVerifying(false); // Verifica completata
+    }
+  }, [router]);
 
   const handleSelectPlan = (event) => {
     const plan = event.target.value;
@@ -29,6 +44,7 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
 
   const handleContinue = () => {
     if (selectedPlan) {
+      sessionStorage.setItem("verifySubscription", "true");
       router.push("/homepage");
     }
   };
@@ -60,6 +76,24 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
       image: "/solanaicon2.png",
     },
   ];
+
+  // Mostra un caricamento fino al completamento della verifica
+  if (isVerifying) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          backgroundColor: "#333",
+          color: "#fff",
+        }}
+      >
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
 
   return (
     <Box

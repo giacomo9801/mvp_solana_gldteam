@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { PrivacyTip, Search } from "@mui/icons-material";
-import NavigationBar from "./components/NavigationBar";
 import axios from "axios";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
@@ -67,7 +66,21 @@ const App = () => {
   const [uploadedDocuments, setUploadedDocuments] = useState(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadingVerify, setLoadingVerify] = useState(true); // Nuovo stato per il caricamento della verifica
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const verifylogin = sessionStorage.getItem("verifylogin") === "true";
+    const verifywallet = sessionStorage.getItem("verifywallet") === "true";
+    const verifySubscription =
+      sessionStorage.getItem("verifySubscription") === "true";
+
+    if (!verifylogin || !verifywallet || !verifySubscription) {
+      router.push("/");
+    } else {
+      setLoadingVerify(false); // Impostiamo loadingVerify a false quando tutte le verifiche sono soddisfatte
+    }
+  }, [router]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -98,6 +111,36 @@ const App = () => {
       fetchAndSetDocuments();
     }
   }, [wallet]);
+
+  const getSubscriptionEmoji = (subscriptionPlan) => {
+    switch (subscriptionPlan) {
+      case "basic":
+        return "🥉";
+      case "standard":
+        return "🥈";
+      case "premium":
+        return "🥇";
+      default:
+        return "";
+    }
+  };
+
+  if (loadingVerify) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#333",
+          color: "#fff",
+        }}
+      >
+        <CircularProgress color="primary" />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -283,20 +326,20 @@ const App = () => {
         }}
       >
         <Typography variant="body2">
-          <strong>Email:</strong> {email}
+          <strong>Email:</strong> {email} ✉️
         </Typography>
         <Typography variant="body2">
-          <strong>Wallet:</strong> {wallet}
+          <strong>Wallet:</strong> {wallet} 🔑
         </Typography>
         <Typography variant="body2">
           <strong>Documenti caricati:</strong>{" "}
-          {loading ? <CircularProgress size={16} /> : uploadedDocuments}
+          {loading ? <CircularProgress size={16} /> : uploadedDocuments} 📄
         </Typography>
         <Typography variant="body2">
-          <strong>Abbonamento:</strong> {subscriptionPlan}
+          <strong>Abbonamento:</strong> {subscriptionPlan} {getSubscriptionEmoji(subscriptionPlan)}
         </Typography>
         <Typography variant="body2">
-          <strong>Data odierna:</strong> {todayDate}
+          <strong>Data odierna:</strong> {todayDate} 🗓️
         </Typography>
         {error && (
           <Typography variant="body2" color="error">
@@ -315,6 +358,8 @@ const App = () => {
 };
 
 export default App;
+
+
 
 //Con password in decript
 // import React from "react";
