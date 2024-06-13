@@ -469,7 +469,8 @@ const DecryptDocuments = () => {
       const url = stream.toBlobURL("application/pdf");
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Decrypted_Document_GLD.pdf`;
+      //crea il nome del documento con la variabile decriptata oggetto
+      link.download = "DecriptedDocument_GLD " + metadata.Descrizione + ".pdf";
       link.click();
     });
   };
@@ -478,11 +479,16 @@ const DecryptDocuments = () => {
     <Container>
       <NavigationBar />
       <Typography variant="h3" gutterBottom style={{ marginBlock: 20 }}>
-        Decrypted Metadata
+        Metadati decriptati
       </Typography>
       {decryptedMetadata && (
-        <Box display="flex" flexDirection="column" alignItems="center">
-          {decryptedMetadata.map((metadata, index) => (
+        <Box
+          display="flex"
+          flexDirection="row"
+          flexWrap="wrap"
+          justifyContent="center"
+        >
+          {Object.keys(decryptedMetadata).map((key, index) => (
             <Box
               key={index}
               sx={{
@@ -490,46 +496,54 @@ const DecryptDocuments = () => {
                 padding: 2,
                 border: "1px solid #ccc",
                 borderRadius: 4,
-                width: "100%",
-                maxWidth: 600,
+                width: 300,
+                maxWidth: "100%",
                 backgroundColor: "#fff",
                 color: "#000",
                 flexDirection: "column",
                 display: "flex",
+                alignItems: "center",
               }}
             >
-              {metadata.image && (
+              {decryptedMetadata[key].image && (
                 <img
-                  src={metadata.image}
+                  src={decryptedMetadata[key].image}
                   alt="NFT Image"
                   style={{
-                    alignSelf: "center",
-                    maxWidth: "200px",
-                    maxHeight: "200px",
-                    objectFit: "scale-down",
-                    marginBlock: 20,
+                    maxWidth: "100%",
+                    maxHeight: 200,
+                    objectFit: "contain",
+                    marginBottom: 10,
                   }}
                 />
               )}
-              {metadata.attributes.map((attribute, attrIndex) => (
-                <Typography key={attrIndex} variant="body1">
+              {decryptedMetadata[key].attributes.map((attribute, attrIndex) => (
+                <Typography
+                  key={attrIndex}
+                  variant="body1"
+                  style={{
+                    overflowWrap: "break-word",
+                    wordBreak: "break-all",
+                    textAlign: "center",
+                  }}
+                >
                   {attribute.trait_type}: {attribute.value}
                 </Typography>
               ))}
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => generatePDF(metadata)}
+                onClick={() => generatePDF(decryptedMetadata[key])}
                 endIcon={<SimCardDownload />}
+                style={{ marginTop: 10 }}
               >
-                Download
+                Scarica
               </Button>
-              <hr />
             </Box>
           ))}
         </Box>
       )}
-      {loading && <Typography>Loading...</Typography>}
+      {loading && <Typography>Caricamento in corso...</Typography>}
       {error && <Typography color="error">{error}</Typography>}
     </Container>
   );
