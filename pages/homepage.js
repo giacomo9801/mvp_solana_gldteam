@@ -29,7 +29,10 @@ import {
 } from "@metaplex-foundation/umi";
 import wallet from "./wallet.json"; // Assicurati che il percorso sia corretto
 
-const fetchDocuments = async (walletAddress) => {
+const fetchWalletData = async (walletAddress) => {
+  const documents = [];
+  let balance = 0;
+
   try {
     const connectionUrl = "https://api.devnet.solana.com";
     const commitment = "finalized";
@@ -54,11 +57,21 @@ const fetchDocuments = async (walletAddress) => {
       })
     );
 
-    return documentsData;
+    documents.push(...documentsData);
   } catch (err) {
     console.error("Error fetching documents:", err);
-    return [];
   }
+
+  try {
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+    const publicKey = new PublicKey(walletAddress);
+    const balanceLamports = await connection.getBalance(publicKey);
+    balance = balanceLamports / LAMPORTS_PER_SOL;
+  } catch (err) {
+    console.error("Error fetching balance:", err);
+  }
+
+  return { documents, balance };
 };
 
 const App = () => {
@@ -68,7 +81,7 @@ const App = () => {
   const todayDate = new Date().toLocaleDateString();
 
   const [email, setEmail] = useState("");
-  const [wallet, setWallet] = useState(walletAddress || "0x123456789");
+  const [wallet, setWallet] = useState(walletAddress || "");
   const [uploadedDocuments, setUploadedDocuments] = useState(0);
   const [subscriptionPlan, setSubscriptionPlan] = useState("");
   const [loading, setLoading] = useState(true);
@@ -102,37 +115,21 @@ const App = () => {
   }, [walletAddress]);
 
   useEffect(() => {
-    const fetchAndSetDocuments = async () => {
+    const fetchAndSetWalletData = async () => {
       try {
         setLoading(true);
-        const documents = await fetchDocuments(wallet);
+        const { documents, balance } = await fetchWalletData(wallet);
         setUploadedDocuments(documents.length);
+        setBalance(balance);
       } catch (err) {
-        setError("Error fetching documents: " + err.message);
+        setError("Error fetching wallet data: " + err.message);
       } finally {
         setLoading(false);
       }
     };
 
     if (wallet) {
-      fetchAndSetDocuments();
-    }
-  }, [wallet]);
-
-  useEffect(() => {
-    const getBalance = async () => {
-      try {
-        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-        const publicKey = new PublicKey(wallet);
-        const balance = await connection.getBalance(publicKey);
-        setBalance(balance / LAMPORTS_PER_SOL);
-      } catch (err) {
-        console.error("Error fetching balance:", err);
-      }
-    };
-
-    if (wallet) {
-      getBalance();
+      fetchAndSetWalletData();
     }
   }, [wallet]);
 
@@ -386,6 +383,7 @@ const App = () => {
 };
 
 export default App;
+
 
 //Con password in decript
 // import React from "react";

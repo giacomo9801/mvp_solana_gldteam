@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Box, CircularProgress } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 import axios from "axios";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@metaplex-foundation/umi";
 import wallet from "./wallet.json";
 import NavigationBar from "./components/NavigationBar";
+import { Blocks } from "react-loader-spinner"; // Importa il componente
 
 const ViewDocuments = () => {
   const [documents, setDocuments] = useState([]);
@@ -34,14 +35,6 @@ const ViewDocuments = () => {
         umi.use(signerIdentity(myKeypairSigner));
 
         const walletAddress = sessionStorage.getItem("wallet");
-        // const ownerPublicKey = "Akkx5jEA1m3yiG5jAnmJUuzaWccpUGZTFHWEvk5rsDzw" NUOVO
-        // const ownerPublicKey = "BpuAW2VoNuwex4Nu9LzcABSdHe42nPNFtrapoxiuDFtA"; // Replace with your public key, VECCHIO
-        //ricavo wallet da storage
-        // const ownerPublicKey = sessionStorage.getItem("wallet");
-        // console.log("Owner Public Key from storage:", ownerPublicKey);
-        //INDIRIZZO WALLET RICAVATO DA CHIAVE PRIVATA
-        // const ownerPublicKey = keypair.publicKey  //prendi la chiave pubblica del wallet
-        // console.log("Owner Public Key:", ownerPublicKey);
         setOwnerPublicKey(walletAddress);
 
         const assets = await fetchAllDigitalAssetByOwner(umi, walletAddress);
@@ -63,7 +56,8 @@ const ViewDocuments = () => {
         setError("Error fetching documents: " + err.message);
         console.error("Error fetching documents:", err);
       } finally {
-        setLoading(false);
+        // Imposta un timeout di 1,5 secondi prima di fermare il caricamento
+        setTimeout(() => setLoading(false), 1500);
       }
     };
 
@@ -83,7 +77,15 @@ const ViewDocuments = () => {
           alignItems="center"
           height="80vh"
         >
-          <CircularProgress />
+          <Blocks // Utilizza il loader Blocks
+            height="80"
+            width="80"
+            color="#4fa94d"
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            visible={true}
+          />
         </Box>
       ) : error ? (
         <Typography color="error">{error}</Typography>
@@ -93,11 +95,7 @@ const ViewDocuments = () => {
           caricati.
         </Typography>
       ) : (
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="center"
-        >
+        <Box display="flex" flexWrap="wrap" justifyContent="center">
           {documents.map((doc, index) => (
             <Box
               key={index}
@@ -115,7 +113,11 @@ const ViewDocuments = () => {
                 textAlign: "center",
               }}
             >
-              <Typography variant="h6" gutterBottom style={{ marginBottom: 10 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                style={{ marginBottom: 10 }}
+              >
                 {doc.name}
               </Typography>
               <Typography
@@ -123,7 +125,7 @@ const ViewDocuments = () => {
                 style={{
                   marginBottom: 10,
                   flex: 1,
-                  overflowWrap: 'break-word',
+                  overflowWrap: "break-word",
                 }}
               >
                 {doc.description}
@@ -133,7 +135,7 @@ const ViewDocuments = () => {
                 style={{
                   marginBottom: 10,
                   flex: 1,
-                  wordBreak: 'break-all',
+                  wordBreak: "break-all",
                 }}
               >
                 {doc.attributes.map((attr, index) => (
@@ -165,18 +167,6 @@ const ViewDocuments = () => {
 };
 
 export default ViewDocuments;
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { Container, Typography, Box, CircularProgress } from "@mui/material";

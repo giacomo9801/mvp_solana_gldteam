@@ -10,6 +10,8 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import Atropos from "atropos/react";
 import "atropos/css"; // Importa i CSS di Atropos
@@ -17,6 +19,7 @@ import "atropos/css"; // Importa i CSS di Atropos
 const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState(initialSelectedPlan);
   const [isVerifying, setIsVerifying] = useState(true); // Stato per la verifica del login e wallet
+  const [currency, setCurrency] = useState("EUR"); // Stato per la valuta
   const router = useRouter();
 
   useEffect(() => {
@@ -52,21 +55,21 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const plans = [
     {
       name: "Basic",
-      price: "€10 al mese",
+      price: { EUR: "€10 al mese", SOL: "0.2 Sol al mese" },
       benefits: ["Accesso limitato ai documenti", "Supporto base"],
       value: "basic",
       image: "/solanaicon2.png",
     },
     {
       name: "Standard",
-      price: "€20 al mese",
+      price: { EUR: "€20 al mese", SOL: "0.4 Sol al mese" },
       benefits: ["Accesso a tutti i documenti", "Supporto standard"],
       value: "standard",
       image: "/solanaicon2.png",
     },
     {
       name: "Premium",
-      price: "€30 al mese",
+      price: { EUR: "€30 al mese", SOL: "0.6 Sol al mese" },
       benefits: [
         "Accesso a tutti i documenti",
         "Supporto prioritario",
@@ -76,6 +79,10 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
       image: "/solanaicon2.png",
     },
   ];
+
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.checked ? "SOL" : "EUR");
+  };
 
   // Mostra un caricamento fino al completamento della verifica
   if (isVerifying) {
@@ -115,6 +122,17 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
         <Typography variant="h4" gutterBottom>
           Scegli il tuo abbonamento
         </Typography>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={currency === "SOL"}
+              onChange={handleCurrencyChange}
+              color="primary"
+            />
+          }
+          label={`Mostra prezzi in ${currency === "EUR" ? "Sol" : "€"}`}
+          sx={{ mb: 2 }}
+        />
         <RadioGroup
           row
           value={selectedPlan}
@@ -174,7 +192,7 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
                     {plan.name}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
-                    {plan.price}
+                    {plan.price[currency]}
                   </Typography>
                   <Radio
                     defaultChecked={selectedPlan === plan.value}
