@@ -220,6 +220,8 @@ const Homepage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
 
+  
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -234,7 +236,7 @@ const Homepage = () => {
     setTimeout(() => {
       if (email === "gld@gmail.com" && password === "Test") {
         sessionStorage.setItem("email", email);
-        router.push("/subscriptionSelector");
+        router.push("/associaWallet");
       } else {
         setErrorMessage("Email o password non validi. Riprova.");
       }

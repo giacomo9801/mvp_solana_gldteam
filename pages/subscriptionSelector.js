@@ -29,7 +29,7 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
 
   const handleContinue = () => {
     if (selectedPlan) {
-      router.push("/associaWallet");
+      router.push("/homepage");
     }
   };
 
