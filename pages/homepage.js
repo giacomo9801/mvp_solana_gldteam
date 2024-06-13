@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import {
+  clusterApiUrl,
+  Connection,
+  PublicKey,
+  LAMPORTS_PER_SOL,
+} from "@solana/web3.js";
 import { useRouter } from "next/router";
 import {
   Button,
@@ -68,6 +74,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [loadingVerify, setLoadingVerify] = useState(true); // Nuovo stato per il caricamento della verifica
   const [error, setError] = useState(null);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     const verifylogin = sessionStorage.getItem("verifylogin") === "true";
@@ -109,6 +116,23 @@ const App = () => {
 
     if (wallet) {
       fetchAndSetDocuments();
+    }
+  }, [wallet]);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      try {
+        const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+        const publicKey = new PublicKey(wallet);
+        const balance = await connection.getBalance(publicKey);
+        setBalance(balance / LAMPORTS_PER_SOL);
+      } catch (err) {
+        console.error("Error fetching balance:", err);
+      }
+    };
+
+    if (wallet) {
+      getBalance();
     }
   }, [wallet]);
 
@@ -336,7 +360,11 @@ const App = () => {
           {loading ? <CircularProgress size={16} /> : uploadedDocuments} 📄
         </Typography>
         <Typography variant="body2">
-          <strong>Abbonamento:</strong> {subscriptionPlan} {getSubscriptionEmoji(subscriptionPlan)}
+          <strong>Abbonamento:</strong> {subscriptionPlan}{" "}
+          {getSubscriptionEmoji(subscriptionPlan)}
+        </Typography>
+        <Typography variant="body2">
+          <strong>Saldo:</strong> {balance} SOL 💰
         </Typography>
         <Typography variant="body2">
           <strong>Data odierna:</strong> {todayDate} 🗓️
@@ -358,8 +386,6 @@ const App = () => {
 };
 
 export default App;
-
-
 
 //Con password in decript
 // import React from "react";
