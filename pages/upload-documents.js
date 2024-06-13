@@ -29,6 +29,7 @@ import {
   DialogContentText,
   DialogTitle,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 import CryptoJS from "crypto-js"; // Import crypto-js
@@ -211,8 +212,6 @@ const UploadDocuments = () => {
       mintNFT(nftUri); // Mint NFT immediately after metadata upload
     } catch (err) {
       console.error("Error uploading metadata:", err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -404,15 +403,6 @@ const UploadDocuments = () => {
             >
               {loading ? "Uploading..." : "Upload"}
             </Button>
-            {/*<LoadingButton
-              onClick={uploadImage}
-              endIcon={<Backup/>}
-              loading={loading}
-              loadingPosition="end"
-              variant="contained"
-            >
-              <span>Send</span>
-            </LoadingButton>*/}
           </Box>
         )}
         {activeStep === 1 && uploadResult && (
@@ -477,7 +467,13 @@ const UploadDocuments = () => {
               variant="contained"
               endIcon={<DriveFileRenameOutline />}
             >
-              {loading ? "Caricamento..." : "Crea metadati"}
+              {loading ? (
+                <>
+                  Caricamento... <CircularProgress size={24} sx={{ ml: 2 }} />
+                </>
+              ) : (
+                "Crea metadati e Mint"
+              )}
             </Button>
           </Box>
         )}
