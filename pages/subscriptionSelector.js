@@ -12,7 +12,6 @@ import {
   Typography,
   Switch,
   FormControlLabel,
-  Modal,
   Backdrop,
 } from "@mui/material";
 import Atropos from "atropos/react";
@@ -80,10 +79,10 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
     const selectedPlanData = plans.find((plan) => plan.value === selectedPlan);
     const fromKeyArray = new Uint8Array(wallet);
     const from = web3.Keypair.fromSecretKey(fromKeyArray);
-    
+
     const lamports =
       parseFloat(selectedPlanData.price.SOL) * web3.LAMPORTS_PER_SOL;
-  
+
     try {
       const transaction = new web3.Transaction().add(
         web3.SystemProgram.transfer({
@@ -92,13 +91,13 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           lamports: lamports,
         })
       );
-  
+
       const signature = await web3.sendAndConfirmTransaction(
         connection,
         transaction,
         [from]
       );
-  
+
       // Notifica alla fine della transazione
       toast.success(
         <a
@@ -112,18 +111,16 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           autoClose: 6000, // Durata notifica in millisecondi (8 secondi)
         }
       );
-  
+
       setTransactionCompleted(true);
     } catch (error) {
       console.error("Errore durante la transazione", error);
     } finally {
-      
-        setIsLoading(false);
-        setShowModal(false);
-     
+      setIsLoading(false);
+      setShowModal(false);
     }
   };
-  
+
   const plans = [
     {
       name: "Basic",

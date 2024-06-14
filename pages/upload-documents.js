@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
   createNft,
@@ -28,7 +27,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Alert,
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
@@ -36,20 +34,18 @@ import CryptoJS from "crypto-js"; // Import crypto-js
 import {
   ArrowBackIos,
   AttachFile,
-  AutoAwesome,
   Backup,
   DriveFileRenameOutline,
   Home,
   Search,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { ToastContainer, toast } from "react-toastify";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NavigationBar from "./components/NavigationBar";
 import { useRouter } from "next/router";
 
 import Tesseract from "tesseract.js"; // Import tesseract.js
-import ShowAlert from "./utils/helper";
 
 const connectionUrl = "https://api.devnet.solana.com";
 const commitment = "finalized";
@@ -137,7 +133,8 @@ const UploadDocuments = () => {
 
       console.log("Ho caricato notify()");
       handleNext();
-      notify("File caricato correttamente ", myUri);
+      //notify("File caricato correttamente ", myUri);
+      notify("OCR del file completato ", "");
     } catch (err) {
       setError("Errore nel caricamento del file: " + err.message);
       console.error("Errore nel caricamento del file ", err);
@@ -147,7 +144,7 @@ const UploadDocuments = () => {
   };
 
   const notify = (text, link) =>
-    toast(
+    toast.success(
       <div>
         {text}
         <a
@@ -168,6 +165,7 @@ const UploadDocuments = () => {
         draggable: true,
         progress: undefined,
         theme: "dark",
+        transition: Bounce,
       }
     );
 
@@ -199,6 +197,14 @@ const UploadDocuments = () => {
             value: encryptValue(metadataValues.Descrizione),
           },
           { trait_type: "Titolo", value: encryptValue(metadataValues.Titolo) },
+          //Aggiungi data italiana
+          {
+            trait_type: "Mint Data",
+            value:
+              new Date().toLocaleDateString() +
+              " " +
+              new Date().toLocaleTimeString(),
+          },
         ],
         properties: {
           files: [{ type: "image/jpeg", uri: standard_image_doc }],
@@ -207,8 +213,9 @@ const UploadDocuments = () => {
 
       const nftUri = await umi.uploader.uploadJson(metadata);
       setUri(nftUri);
-      console.log("Metadata upload successful:", nftUri);
-      notify("Metadata caricati correttamente: ", nftUri);
+      //console.log("Metadata upload successful:", nftUri);
+      // notify("Metadata caricati correttamente: ", nftUri);
+      notify("Metadata del documento caricati, mint in corso...", "");
       mintNFT(nftUri); // Mint NFT immediately after metadata upload
     } catch (err) {
       console.error("Error uploading metadata:", err);
@@ -289,7 +296,7 @@ const UploadDocuments = () => {
         "https://explorer.solana.com/tx/" + transazione[0] + "?cluster=devnet"
       );
       notify(
-        "Documento NFT mintato correttamente!",
+        "Documento NFT mintato correttamente! \n",
         "https://explorer.solana.com/tx/" + transazione[0] + "?cluster=devnet"
       );
       handleNext();
@@ -386,7 +393,7 @@ const UploadDocuments = () => {
               onChange={handleFileChange}
               style={{ width: "30%", marginBlock: 15 }}
             >
-              Seleziona file
+              File
               <VisuallyHiddenInput
                 id="fileInput"
                 type="file"
@@ -416,7 +423,7 @@ const UploadDocuments = () => {
               variant="contained"
               endIcon={<Backup />}
             >
-              {loading ? "Uploading..." : "Upload"}
+              {loading ? "Scansione in corso..." : "Upload File (OCR)"}
             </Button>
           </Box>
         )}
@@ -487,7 +494,7 @@ const UploadDocuments = () => {
                   Caricamento... <CircularProgress size={24} sx={{ ml: 2 }} />
                 </>
               ) : (
-                "Crea metadati e Mint"
+                "Crea metadati e Mint Documento"
               )}
             </Button>
           </Box>
@@ -531,7 +538,7 @@ const UploadDocuments = () => {
               Visualizza
             </Button>
             <Button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/homepage")}
               disabled={loading}
               variant="contained"
               color="success"

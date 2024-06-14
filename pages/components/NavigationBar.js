@@ -1,11 +1,14 @@
 import React from "react";
 import { AppBar, Toolbar, Button, Box } from "@mui/material";
-import { Home, Visibility, LockOpen,Search, PrivacyTip} from "@mui/icons-material";
+import {
+  Home,
+  Search,
+  PrivacyTip,
+} from "@mui/icons-material";
 import SendIcon from "@mui/icons-material/Send";
 import { useRouter } from "next/router";
-import { css, keyframes } from '@emotion/react';
-import styled from '@emotion/styled';
-
+import { keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
 
 // Definisce l'animazione di rimbalzo più lenta e meno marcata
 const bounce = keyframes`
@@ -27,7 +30,7 @@ const BounceButton = styled(Button)`
   margin: 0 16px;
   transition: color 0.3s ease-in-out;
   &:hover {
-    color: #17162A; // Colore al passaggio del mouse
+    color: #17162a; // Colore al passaggio del mouse
     text-decoration: underline;
     animation: ${bounce} 1s;
   }
@@ -48,7 +51,12 @@ function NavigationBar() {
       }}
     >
       <Toolbar>
-        <Box display="flex" justifyContent="center" alignItems="center" sx={{ flexGrow: 1 }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ flexGrow: 1 }}
+        >
           <BounceButton
             onClick={() => router.push("/homepage")}
             startIcon={<Home />}

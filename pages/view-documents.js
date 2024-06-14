@@ -95,8 +95,12 @@ const ViewDocuments = () => {
           caricati.
         </Typography>
       ) : (
-        <Box display="flex" flexWrap="wrap" justifyContent="center">
+        <Box display="flex" flexWrap="wrap" justifyContent="center"
+        alignItems="center" 
+        >
+          
           {documents.map((doc, index) => (
+            
             <Box
               key={index}
               sx={{
@@ -111,13 +115,25 @@ const ViewDocuments = () => {
                 flexDirection: "column",
                 display: "flex",
                 textAlign: "center",
+
               }}
             >
+              <img
+                src={doc.image}
+                alt={doc.name}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: 200,
+                  objectFit: "contain",
+                  marginBottom: 10,
+                }}
+              />
               <Typography
                 variant="h6"
                 gutterBottom
                 style={{ marginBottom: 10 }}
               >
+                
                 {doc.name}
               </Typography>
               <Typography
@@ -148,16 +164,7 @@ const ViewDocuments = () => {
                 ))}
               </Typography>
 
-              <img
-                src={doc.image}
-                alt={doc.name}
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: 200,
-                  objectFit: "contain",
-                  marginBottom: 10,
-                }}
-              />
+              
             </Box>
           ))}
         </Box>

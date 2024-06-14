@@ -11,7 +11,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import { PublicKey, ClusterApiUrl } from "@solana/web3.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import wallet from "./wallet.json";
@@ -51,7 +50,7 @@ const WalletAssociation = () => {
       sessionStorage.setItem("wallet", connectedAddress);
       sessionStorage.setItem("verifywallet", "true");
       // Request airdrop
-      await handleAirdrop(connectedAddress);
+      //await handleAirdrop(connectedAddress);
     } catch (error) {
       console.error("Errore nella connessione al wallet:", error);
       setConnecting(false);

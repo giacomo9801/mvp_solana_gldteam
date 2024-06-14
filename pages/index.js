@@ -5,8 +5,6 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
 import {
   IconButton,
-  AppBar,
-  Toolbar,
   Typography,
   Container,
   Box,
@@ -162,7 +160,6 @@ const LoginSection = ({
         </Typography>
         <Typography
           variant="h6"
-          
           component="h2"
           gutterBottom
           sx={{ color: "error.main" }}
@@ -253,7 +250,10 @@ const Homepage = () => {
       if (email === "gld@gmail.com" && password === "Test") {
         sessionStorage.setItem("email", email);
         sessionStorage.setItem("verifylogin", "true");
-        console.log ("Valore di verifylogin in index: ", sessionStorage.getItem("verifylogin"));
+        console.log(
+          "Valore di verifylogin in index: ",
+          sessionStorage.getItem("verifylogin")
+        );
         router.push("/associaWallet");
       } else {
         setErrorMessage("Email o password non validi. Riprova.");
