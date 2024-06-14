@@ -335,11 +335,26 @@ const UploadDocuments = () => {
       <header className="App-header">
         <Stepper
           activeStep={activeStep}
-          style={{ backgroundColor: "white", borderRadius: 10, padding: 10 }}
+          style={{ backgroundColor: "transparent", padding: "20px 0" }}
+          alternativeLabel
         >
           {steps.map((label, index) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel
+                StepIconProps={{
+                  classes: {
+                    root: "custom-stepper-icon",
+                    active: "custom-stepper-icon-active",
+                  },
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  style={{ fontWeight: "bold", color: "white" }}
+                >
+                  {label}
+                </Typography>
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
