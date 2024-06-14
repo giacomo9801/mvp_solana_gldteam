@@ -63,7 +63,7 @@ const WalletAssociation = () => {
 
       const airdropSignature = await connection.requestAirdrop(
         keypair.publicKey,
-        1 * LAMPORTS_PER_SOL
+        5 * LAMPORTS_PER_SOL
       );
       console.log(
         `Airdrop OK! Transazione: https://explorer.solana.com/tx/${airdropSignature}?cluster=devnet`
