@@ -527,9 +527,20 @@ const UploadDocuments = () => {
             </Button>
           </Box>
         )}
-        {activeStep < steps.length - 1 && (
+        {/* {activeStep < steps.length - 1 && (
           <Button
             disabled={activeStep === 0 || loading}
+            onClick={handleBack}
+            variant="contained"
+            style={{ color: "white" }}
+            startIcon={<ArrowBackIos />}
+          >
+            Indietro
+          </Button>
+        )} */}
+        {activeStep === 0 ? null : (
+          <Button
+            disabled={loading}
             onClick={handleBack}
             variant="contained"
             style={{ color: "white" }}
