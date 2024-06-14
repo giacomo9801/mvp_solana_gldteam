@@ -12,26 +12,35 @@ import {
   Typography,
   Switch,
   FormControlLabel,
+  Modal,
+  Backdrop,
 } from "@mui/material";
 import Atropos from "atropos/react";
-import "atropos/css"; // Importa i CSS di Atropos
+import wallet from "./wallet.json";
+import "atropos/css";
+import * as web3 from "@solana/web3.js";
+import { Blocks } from "react-loader-spinner";
+import { ToastContainer, toast } from "react-toastify"; // Importa ToastContainer e toast
+import "react-toastify/dist/ReactToastify.css";
 
 const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState(initialSelectedPlan);
-  const [isVerifying, setIsVerifying] = useState(true); // Stato per la verifica del login e wallet
-  const [currency, setCurrency] = useState("EUR"); // Stato per la valuta
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [currency, setCurrency] = useState("EUR");
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [transactionCompleted, setTransactionCompleted] = useState(false);
+  const [isPayingInSol, setIsPayingInSol] = useState(false); // Stato per il pulsante "Paga in SOL"
   const router = useRouter();
 
   useEffect(() => {
     const verifylogin = sessionStorage.getItem("verifylogin") === "true";
     const verifywallet = sessionStorage.getItem("verifywallet") === "true";
-    console.log("Valore di verifylogin nel componente:", verifylogin); // Debug
-    console.log("Valore di verifywallet nel componente:", verifywallet); // Debug
 
     if (!verifylogin || !verifywallet) {
       router.push("/");
     } else {
-      setIsVerifying(false); // Verifica completata
+      setIsVerifying(false);
     }
   }, [router]);
 
@@ -46,12 +55,75 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
   };
 
   const handleContinue = () => {
-    if (selectedPlan) {
+    if (selectedPlan && transactionCompleted) {
       sessionStorage.setItem("verifySubscription", "true");
       router.push("/homepage");
     }
   };
 
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.checked ? "SOL" : "EUR");
+  };
+
+  const handlePayInSol = () => {
+    setShowModal(true);
+  };
+
+  const connection = new web3.Connection(
+    "https://api.devnet.solana.com",
+    "finalized"
+  );
+  const toAddress = "3EwusDY4gJHu6ED1v4gsjZEF5AA1C7VA6HCr1UzBJaw2";
+  const handleConfirmPayment = async () => {
+    setIsLoading(true);
+    setIsPayingInSol(true); // Disabilita il pulsante "Paga in SOL"
+    const selectedPlanData = plans.find((plan) => plan.value === selectedPlan);
+    const fromKeyArray = new Uint8Array(wallet);
+    const from = web3.Keypair.fromSecretKey(fromKeyArray);
+    
+    const lamports =
+      parseFloat(selectedPlanData.price.SOL) * web3.LAMPORTS_PER_SOL;
+  
+    try {
+      const transaction = new web3.Transaction().add(
+        web3.SystemProgram.transfer({
+          fromPubkey: from.publicKey,
+          toPubkey: new web3.PublicKey(toAddress),
+          lamports: lamports,
+        })
+      );
+  
+      const signature = await web3.sendAndConfirmTransaction(
+        connection,
+        transaction,
+        [from]
+      );
+  
+      // Notifica alla fine della transazione
+      toast.success(
+        <a
+          href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visualizza la transazione
+        </a>,
+        {
+          autoClose: 6000, // Durata notifica in millisecondi (8 secondi)
+        }
+      );
+  
+      setTransactionCompleted(true);
+    } catch (error) {
+      console.error("Errore durante la transazione", error);
+    } finally {
+      
+        setIsLoading(false);
+        setShowModal(false);
+     
+    }
+  };
+  
   const plans = [
     {
       name: "Basic",
@@ -80,11 +152,6 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
     },
   ];
 
-  const handleCurrencyChange = (event) => {
-    setCurrency(event.target.checked ? "SOL" : "EUR");
-  };
-
-  // Mostra un caricamento fino al completamento della verifica
   if (isVerifying) {
     return (
       <Box
@@ -142,8 +209,8 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           {plans.map((plan, index) => (
             <Atropos
               key={plan.value}
-              activeOffset={20} // Riduce l'intensità dell'effetto
-              shadowScale={0.8} // Riduce l'intensità dell'ombra
+              activeOffset={20}
+              shadowScale={0.8}
               className="atropos-card"
             >
               <Card
@@ -217,16 +284,114 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           ))}
         </RadioGroup>
         {selectedPlan && (
-          <Button variant="contained" onClick={handleContinue} sx={{ mt: 2 }}>
-            Continua
-          </Button>
+          <>
+            {currency === "EUR" ? (
+              <Button
+                variant="contained"
+                sx={{ mt: 2 }}
+                onClick={() => {
+                  /* funzione di pagamento con Stripe */
+                }}
+                disabled={transactionCompleted}
+              >
+                Paga con Stripe
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ mt: 2 }}
+                onClick={handlePayInSol}
+                disabled={transactionCompleted || isPayingInSol} // Disabilita il pulsante se la transazione è completata o in corso
+              >
+                Paga in SOL
+              </Button>
+            )}
+          </>
         )}
         {selectedPlan && (
           <Box variant="h6" gutterBottom sx={{ mt: 2 }}>
             Hai selezionato il piano: {selectedPlan}
           </Box>
         )}
+        {transactionCompleted && (
+          <Button variant="contained" onClick={handleContinue} sx={{ mt: 2 }}>
+            Continua
+          </Button>
+        )}
       </Container>
+
+      <Backdrop
+        open={showModal}
+        onClick={() => setShowModal(false)}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Sfondo sfocato
+          animationDuration: "4000ms", // Durata dell'animazione in millisecondi (4 secondi)
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "black",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <Blocks
+                height="80"
+                width="80"
+                color="#4fa94d"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                visible={true}
+              />
+            </Box>
+          ) : (
+            <>
+              <Typography variant="h6" component="h2" gutterBottom>
+                Conferma Pagamento
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {sessionStorage.getItem("email") || ""}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Stai pagando{" "}
+                {plans.find((plan) => plan.value === selectedPlan)?.price.SOL}{" "}
+                SOL all'indirizzo:
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                {toAddress}
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleConfirmPayment}
+                sx={{ mt: 2 }}
+              >
+                Conferma la transazione
+              </Button>
+            </>
+          )}
+        </Box>
+      </Backdrop>
+
+      {/* ToastContainer per mostrare le notifiche */}
+      <ToastContainer />
     </Box>
   );
 };
