@@ -50,7 +50,7 @@ const WalletAssociation = () => {
       sessionStorage.setItem("wallet", connectedAddress);
       sessionStorage.setItem("verifywallet", "true");
       // Request airdrop
-      //await handleAirdrop(connectedAddress);
+      await handleAirdrop(connectedAddress);
     } catch (error) {
       console.error("Errore nella connessione al wallet:", error);
       setConnecting(false);
