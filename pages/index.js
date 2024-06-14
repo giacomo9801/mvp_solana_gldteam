@@ -316,7 +316,7 @@ const Homepage = () => {
                 >
                   GLD Team
                 </span>{" "}
-                per la notarizzazione di documenti in NFT su Blockchain Solana.
+                per la notarizzazione di documenti tramite NFT su Blockchain Solana.
               </Typography>
             </Box>
           </Container>
