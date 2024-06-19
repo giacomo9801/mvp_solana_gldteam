@@ -12,13 +12,59 @@ import {
 } from "@metaplex-foundation/umi";
 import wallet from "./wallet.json";
 import NavigationBar from "./components/NavigationBar";
-import { Blocks } from "react-loader-spinner"; // Importa il componente
+import { Blocks } from "react-loader-spinner";
 
 const ViewDocuments = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ownerPublicKey, setOwnerPublicKey] = useState(null);
+  const [hashCountAlerted, setHashCountAlerted] = useState(false);
+
+  // Funzione per contare i documenti con lo stesso hash
+  const countFilesWithSameHash = () => {
+    if (!documents) {
+      throw new Error("documents is not defined");
+    }
+
+    const hashCountMap = {};
+
+    documents.forEach((doc) => {
+      if (!doc.attributes) {
+        throw new Error("Document attributes are not defined");
+      }
+
+      const fileHashAttr = doc.attributes.find(
+        (attr) => attr.trait_type === "File Hash"
+      );
+      if (!fileHashAttr) {
+        console.warn("File Hash attribute not found in document:", doc);
+      }
+
+      const fileHash = fileHashAttr?.value;
+
+      if (fileHash) {
+        if (hashCountMap[fileHash]) {
+          hashCountMap[fileHash]++;
+        } else {
+          hashCountMap[fileHash] = 1;
+        }
+      }
+    });
+
+    console.log("Hash Count Map:", hashCountMap); // Console log per monitorare il conteggio
+    return hashCountMap;
+  };
+
+  // Funzione per verificare se ci sono duplicati
+  const hasDuplicates = (hashCountMap) => {
+    for (let hash in hashCountMap) {
+      if (hashCountMap[hash] > 1) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -47,7 +93,7 @@ const ViewDocuments = () => {
             const metadataUri = asset.metadata.uri;
             const res = await axios.get(metadataUri);
             console.log("Metadata URI:", metadataUri);
-            return res.data;
+            return { ...res.data, fileHash: asset.metadata.fileHash }; // Aggiungi il fileHash al documento
           })
         );
 
@@ -56,7 +102,6 @@ const ViewDocuments = () => {
         setError("Error fetching documents: " + err.message);
         console.error("Error fetching documents:", err);
       } finally {
-        // Imposta un timeout di 1,5 secondi prima di fermare il caricamento
         setTimeout(() => setLoading(false), 1500);
       }
     };
@@ -64,6 +109,28 @@ const ViewDocuments = () => {
     fetchDocuments();
   }, []);
 
+  useEffect(() => {
+    const hashCountMap = countFilesWithSameHash();
+  
+    // Verifica se ci sono ripetizioni e mostra un alert solo una volta
+    if (!hashCountAlerted && hasDuplicates(hashCountMap)) {
+      let message = "Attenzione!! Ci sono ripetizioni degli Hash! Sono stati caricati documenti uguali ma con possibili dati differenti:\n";
+  
+      // Filtra i documenti con ripetizioni maggiori di 1
+      const duplicatedHashes = Object.entries(hashCountMap)
+        .filter(([hash, count]) => count > 1)
+        .map(([hash, count]) => ({ hash, count }));
+  
+      // Costruisci il messaggio con le ripetizioni di hash
+      duplicatedHashes.forEach(({ hash, count }) => {
+        message += `Hash: ${hash}, Ripetizioni: ${count}\n`;
+      });
+  
+      alert(message);
+      setHashCountAlerted(true); // Imposta il flag per non mostrare l'alert di nuovo
+    }
+  }, [documents, hashCountAlerted]); // Dipendenza dell'effetto sul cambio di documents e hashCountAlerted
+  
   return (
     <Container>
       <NavigationBar />
@@ -77,7 +144,7 @@ const ViewDocuments = () => {
           alignItems="center"
           height="80vh"
         >
-          <Blocks // Utilizza il loader Blocks
+          <Blocks
             height="80"
             width="80"
             color="#4fa94d"
@@ -91,16 +158,16 @@ const ViewDocuments = () => {
         <Typography color="error">{error}</Typography>
       ) : documents.length === 0 ? (
         <Typography variant="h6" gutterBottom>
-          Per il wallet {ownerPublicKey} non sono stati trovati documenti
-          caricati.
+          Per il wallet {ownerPublicKey} non sono stati trovati documenti caricati.
         </Typography>
       ) : (
-        <Box display="flex" flexWrap="wrap" justifyContent="center"
-        alignItems="center" 
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="center"
+          alignItems="center"
         >
-          
           {documents.map((doc, index) => (
-            
             <Box
               key={index}
               sx={{
@@ -115,7 +182,6 @@ const ViewDocuments = () => {
                 flexDirection: "column",
                 display: "flex",
                 textAlign: "center",
-
               }}
             >
               <img
@@ -128,12 +194,7 @@ const ViewDocuments = () => {
                   marginBottom: 10,
                 }}
               />
-              <Typography
-                variant="h6"
-                gutterBottom
-                style={{ marginBottom: 10 }}
-              >
-                
+              <Typography variant="h6" gutterBottom style={{ marginBottom: 10 }}>
                 {doc.name}
               </Typography>
               <Typography
@@ -155,16 +216,11 @@ const ViewDocuments = () => {
                 }}
               >
                 {doc.attributes.map((attr, index) => (
-                  <span
-                    key={index}
-                    style={{ display: "block", marginBottom: 5 }}
-                  >
+                  <span key={index} style={{ display: "block", marginBottom: 5 }}>
                     <strong>{attr.trait_type}:</strong> {attr.value}
                   </span>
                 ))}
               </Typography>
-
-              
             </Box>
           ))}
         </Box>
@@ -174,6 +230,8 @@ const ViewDocuments = () => {
 };
 
 export default ViewDocuments;
+
+
 
 // import React, { useState, useEffect } from "react";
 // import { Container, Typography, Box, CircularProgress } from "@mui/material";

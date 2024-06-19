@@ -54,6 +54,7 @@ const UploadDocuments = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [uri, setUri] = useState("");
   const [completed, setCompleted] = useState(false);
+  const [fileHash, setFileHash] = useState(""); // Stato per l'hash del file
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadResult, setUploadResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -205,6 +206,10 @@ const UploadDocuments = () => {
               " " +
               new Date().toLocaleTimeString(),
           },
+          {
+            trait_type: "File Hash",
+            value: fileHash, // Aggiungi l'hash del file ai metadati
+          },
         ],
         properties: {
           files: [{ type: "image/jpeg", uri: standard_image_doc }],
@@ -232,7 +237,19 @@ const UploadDocuments = () => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
+    calculateFileHash(file);
     extractTextFromImage(file); // Extract text from the selected image file
+  };
+
+  const calculateFileHash = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const wordArray = CryptoJS.lib.WordArray.create(reader.result);
+      const hash = CryptoJS.SHA256(wordArray).toString();
+      setFileHash(hash);
+      console.log("Hash del file: ", hash);
+    };
+    reader.readAsArrayBuffer(file);
   };
 
   const extractTextFromImage = (file) => {

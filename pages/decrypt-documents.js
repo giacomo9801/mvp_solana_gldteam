@@ -79,13 +79,16 @@ const DecryptDocuments = () => {
 
           // Verifica se la decrittografia ha avuto successo
           if (decryptedValue === "") {
-            console.error("Decryption failed for value:", encryptedValue);
+            console.error(
+              "Errore nella decryptazione per i valori: ",
+              encryptedValue
+            );
             return null; // Oppure gestisci l'errore in modo appropriato
           }
 
           return decryptedValue;
         } catch (error) {
-          console.error("Error decrypting value:", error);
+          console.error("Errore nella decryptazione per i valori:", error);
           return null; // Oppure gestisci l'errore in modo appropriato
         }
       };
@@ -118,14 +121,17 @@ const DecryptDocuments = () => {
     }
   }, [encryptedMetadata]);
 
-  function generatePDF(metadata, formattedDate) {
+  function generatePDF(metadata, formattedDate, hashfile) {
     const doc = new PDFDocument();
     const stream = doc.pipe(blobStream());
 
-    // Parte 1: Escludere "Mint Data"
+    // Parte 1: Escludere "Mint Data" e "File Hash"
     metadata.attributes.forEach((attribute) => {
-      if (attribute.trait_type !== "Mint Data") {
-        // Escludi "Mint Data"
+      if (
+        attribute.trait_type !== "Mint Data" &&
+        attribute.trait_type !== "File Hash"
+      ) {
+        // Escludi "Mint Data" e "File Hash"
         doc.fontSize(12).text(`${attribute.trait_type}: ${attribute.value}`, {
           align: "center",
         });
@@ -133,16 +139,20 @@ const DecryptDocuments = () => {
       }
     });
 
-    // Parte 2: Includere solo "Mint Data" con la data formattata
-    metadata.attributes.forEach((attribute) => {
-      if (attribute.trait_type === "Mint Data") {
-        // Includi solo "Mint Data"
-        doc.fontSize(12).text(`${attribute.trait_type}: ${formattedDate}`, {
-          align: "center",
-        });
-        doc.moveDown(1); // Aggiungi uno spazio tra gli attributi
-      }
-    });
+    // Parte 2: Includere solo "Mint Data" e "File Hash" con i valori formattati
+    if (formattedDate) {
+      doc.fontSize(12).text(`Mint Data: ${formattedDate}`, {
+        align: "center",
+      });
+      doc.moveDown(1); // Aggiungi uno spazio tra gli attributi
+    }
+
+    if (hashfile) {
+      doc.fontSize(12).text(`File Hash: ${hashfile}`, {
+        align: "center",
+      });
+      doc.moveDown(1); // Aggiungi uno spazio tra gli attributi
+    }
 
     doc.moveDown(2);
 
@@ -191,6 +201,7 @@ const DecryptDocuments = () => {
       link.href = url;
       //crea il nome del documento con la variabile decriptata oggetto
       link.download = "DecriptedDocument_GLD " + metadata.Descrizione + ".pdf";
+
       link.click();
     });
   }
@@ -258,7 +269,11 @@ const DecryptDocuments = () => {
                   />
                 )}
                 {decryptedMetadata[key].attributes
-                  .filter((attribute) => attribute.trait_type !== "Mint Data") // Filtra per escludere "Mint Data"
+                  .filter(
+                    (attribute) =>
+                      attribute.trait_type !== "Mint Data" &&
+                      attribute.trait_type !== "File Hash"
+                  ) // Filtra per escludere "Mint Data"
                   .map((attribute, attrIndex) => (
                     <Typography
                       key={attrIndex}
@@ -273,7 +288,11 @@ const DecryptDocuments = () => {
                     </Typography>
                   ))}
                 {encryptedMetadata[key].attributes
-                  .filter((attribute) => attribute.trait_type === "Mint Data") // Filtra solo l'attributo "Mint Data"
+                  .filter(
+                    (attribute) =>
+                      attribute.trait_type === "Mint Data" ||
+                      attribute.trait_type === "File Hash"
+                  )
                   .map((attribute, attrIndex) => (
                     <Typography
                       key={attrIndex}
@@ -284,21 +303,29 @@ const DecryptDocuments = () => {
                         textAlign: "center",
                       }}
                     >
-                      Mint Data: {attribute.value} {/* Mostra solo il valore */}
+                      {attribute.trait_type}: {attribute.value}
                     </Typography>
                   ))}
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    const mintDataAttribute = encryptedMetadata[
-                      key
-                    ].attributes.find(
+                    const attributes = encryptedMetadata[key].attributes;
+
+                    const mintDataAttribute = attributes.find(
                       (attr) => attr.trait_type === "Mint Data"
                     );
-                    if (mintDataAttribute) {
+                    const fileHashAttribute = attributes.find(
+                      (attr) => attr.trait_type === "File Hash"
+                    );
+                    if (mintDataAttribute && fileHashAttribute) {
                       const formattedDate = mintDataAttribute.value;
-                      generatePDF(decryptedMetadata[key], formattedDate);
+                      const formattedHash = fileHashAttribute.value;
+                      generatePDF(
+                        decryptedMetadata[key],
+                        formattedDate,
+                        formattedHash
+                      );
                     } else {
                       generatePDF(decryptedMetadata[key], null); // Passa null se "Mint Data" non è presente
                     }
