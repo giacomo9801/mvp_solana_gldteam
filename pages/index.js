@@ -15,6 +15,7 @@ import {
   CardMedia,
   Grid,
   TextField,
+  Divider,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -90,6 +91,7 @@ const LoginSection = ({
     gap={4}
     sx={{ mt: 4, width: "99%" }}
   >
+
     <Card
       sx={{
         flex: 1,
@@ -103,54 +105,7 @@ const LoginSection = ({
         border: "1px solid rgba(255, 255, 255, 0.18)",
         color: "white",
         textAlign: "center",
-      }}
-      data-aos="fade-up"
-    >
-      <CardContent>
-        <Typography
-          variant="body2"
-          component="div"
-          sx={{
-            backgroundColor: "yellow",
-            color: "black",
-            fontWeight: "bold",
-            borderRadius: 1,
-            padding: 1,
-            marginBottom: 2,
-            display: "inline-block",
-          }}
-        >
-          Work in progress...
-        </Typography>
-        <Typography variant="h5" component="h2" gutterBottom>
-          Login con SPID
-        </Typography>
-        <Button
-          //disabilitalo
-          disabled
-          variant="contained"
-          color="primary"
-          endIcon={<AccountCircleIcon />}
-          onClick={handleSpidLogin}
-          sx={{ mt: 2 }}
-        >
-          Accedi con SPID
-        </Button>
-      </CardContent>
-    </Card>
-    <Card
-      sx={{
-        flex: 1,
-        margin: 2,
-        marginBottom: 40,
-        padding: 4,
-        backgroundColor: "rgba(5, 40, 76, 0.7)",
-        backdropFilter: "blur(10px)",
-        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-        borderRadius: 10,
-        border: "1px solid rgba(255, 255, 255, 0.18)",
-        color: "white",
-        textAlign: "center",
+        marginInline: 70
       }}
       data-aos="fade-up"
     >
@@ -221,6 +176,36 @@ const LoginSection = ({
           disabled={isLoading}
         >
           {isLoading ? "Login in corso..." : "Accedi"}
+        </Button>
+        <Divider style={{marginBlock: 10}}>O</Divider>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Login con SPID
+        </Typography>
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{
+            backgroundColor: "yellow",
+            color: "black",
+            fontWeight: "bold",
+            borderRadius: 1,
+            padding: 1,
+            marginBottom: 2,
+            marginInline: 25
+          }}
+        >
+          Work in progress...
+        </Typography>
+        <Button
+          //disabilitalo
+          disabled
+          variant="contained"
+          color="primary"
+          endIcon={<AccountCircleIcon />}
+          onClick={handleSpidLogin}
+          sx={{ mt: 1 }}
+        >
+          Accedi con SPID
         </Button>
       </CardContent>
     </Card>

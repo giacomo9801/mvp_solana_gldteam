@@ -16,7 +16,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { PrivacyTip, Search } from "@mui/icons-material";
+import { ContentCopy, PrivacyTip, Search } from "@mui/icons-material";
 import axios from "axios";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {
@@ -28,6 +28,7 @@ import {
   signerIdentity,
 } from "@metaplex-foundation/umi";
 import wallet from "./wallet.json"; // Assicurati che il percorso sia corretto
+import { ToastContainer, toast } from "react-toastify";
 
 const fetchWalletData = async (walletAddress) => {
   const documents = [];
@@ -146,6 +147,23 @@ const App = () => {
     }
   };
 
+  const formatWallet = (wallet) => {
+    if (wallet.length > 8) {
+      return `${wallet.slice(0, 4)}....${wallet.slice(-4)}`;
+    }
+    return wallet;
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(wallet)
+      .then(() => {
+        toast.info("Indirizzo copiato");
+      })
+      .catch(err => {
+        console.error('Errore nel copiare il testo: ', err);
+      });
+  };
+
   if (loadingVerify) {
     return (
       <Box
@@ -180,6 +198,7 @@ const App = () => {
         position: "relative",
       }}
     >
+      <ToastContainer />
       <header>
         <Typography variant="h2" align="center" gutterBottom marginTop={5}>
           Dashboard
@@ -338,7 +357,7 @@ const App = () => {
       <Box
         sx={{
           position: "absolute",
-          bottom: 20,
+          top: 20,
           right: 20,
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           padding: 2,
@@ -347,24 +366,24 @@ const App = () => {
         }}
       >
         <Typography variant="body2">
-          <strong>Email:</strong> {email} ✉️
+          ✉️ <strong>Email:</strong> {email}
         </Typography>
         <Typography variant="body2">
-          <strong>Wallet:</strong> {wallet} 🔑
+          🔑 <strong>Wallet:</strong> {formatWallet(wallet)}
+          {<ContentCopy fontSize="small" style={{cursor: 'pointer'}} onClick={copyToClipboard}/>}
         </Typography>
         <Typography variant="body2">
-          <strong>Documenti caricati:</strong>{" "}
-          {loading ? <CircularProgress size={16} /> : uploadedDocuments} 📄
+          📄 <strong>Documenti caricati:</strong>{" "}
+          {loading ? <CircularProgress size={16} /> : uploadedDocuments}
         </Typography>
         <Typography variant="body2">
-          <strong>Abbonamento:</strong> {subscriptionPlan}{" "}
-          {getSubscriptionEmoji(subscriptionPlan)}
+          {getSubscriptionEmoji(subscriptionPlan)}<strong> Abbonamento:</strong> {subscriptionPlan}{" "}
         </Typography>
         <Typography variant="body2">
-          <strong>Saldo:</strong> {balance} SOL 💰
+          💰 <strong>Saldo:</strong> {balance} SOL
         </Typography>
         <Typography variant="body2">
-          <strong>Data odierna:</strong> {todayDate} 🗓️
+          🗓️ <strong>Data odierna:</strong> {todayDate}
         </Typography>
         {error && (
           <Typography variant="body2" color="error">
