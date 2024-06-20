@@ -30,8 +30,7 @@ const BounceButton = styled(Button)`
   margin: 0 16px;
   transition: color 0.3s ease-in-out;
   &:hover {
-    color: #17162a; // Colore al passaggio del mouse
-    text-decoration: underline;
+    color: #17162A; // Colore al passaggio del mouse
     animation: ${bounce} 1s;
   }
 `;

@@ -21,6 +21,8 @@ import * as web3 from "@solana/web3.js";
 import { Blocks } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify"; // Importa ToastContainer e toast
 import "react-toastify/dist/ReactToastify.css";
+import { Payments } from "@mui/icons-material";
+import { STRIPE_API_URL } from "./utils/apiEndpoints";
 
 const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState(initialSelectedPlan);
@@ -32,6 +34,11 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
   const [isPayingInSol, setIsPayingInSol] = useState(false); // Stato per il pulsante "Paga in SOL"
   const router = useRouter();
 
+  const getQueryParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    return Object.fromEntries(params.entries());
+  };
+
   useEffect(() => {
     const verifylogin = sessionStorage.getItem("verifylogin") === "true";
     const verifywallet = sessionStorage.getItem("verifywallet") === "true";
@@ -40,6 +47,14 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
       router.push("/");
     } else {
       setIsVerifying(false);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    const params = getQueryParams();
+    if (params.verifySubscription) {
+      sessionStorage.setItem("verifySubscription", "true");
+      router.push("/homepage");
     }
   }, [router]);
 
@@ -66,6 +81,47 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
 
   const handlePayInSol = () => {
     setShowModal(true);
+  };
+
+  const handleStripeClick = (plan) => {
+    let price_id;
+    switch (plan) {
+      case 'basic':
+        price_id = 'price_1PRabTEjZuFurIwzZndnqOil';
+        break;
+      case 'standard':
+        price_id = 'price_1PRabqEjZuFurIwzRmMNzdnp';
+        break;
+      case 'premium':
+        price_id = 'price_1PRacCEjZuFurIwz8Y6vhs5e';
+        break;
+      default:
+        price_id = 'https://buy.stripe.com/test_default';
+        break;
+    }
+    fetchStripeCheckoutSession(price_id)
+  };
+
+  const fetchStripeCheckoutSession = async (price) => {
+    try {
+     const response = await fetch(`${STRIPE_API_URL}/create-checkout-session`, {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({ price_id: price }),
+     });
+
+     const data = await response.json();
+     if (data.url) {
+       window.location.href = data.url; // Redirect to Stripe checkout
+     } else {
+       console.error('Failed to create checkout session', data.error);
+     }
+
+   } catch (error) {
+       throw new Error('I crashed !'+ {error});
+   }
   };
 
   const connection = new web3.Connection(
@@ -186,17 +242,16 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
         <Typography variant="h4" gutterBottom>
           Scegli il tuo abbonamento
         </Typography>
-        <FormControlLabel
-          control={
-            <Switch
+        <Box sx={{ mb: 2, background: 'white', borderRadius: 3, justifyContent: 'center', alignItems: 'center', width: 270, marginLeft: 'auto', marginRight: 'auto'}}>
+          <Typography variant="button" gutterBottom color={'black'}>
+          {`Mostra prezzi in ${currency === "EUR" ? "Sol" : "€"}`}
+          </Typography>
+          <Switch
               checked={currency === "SOL"}
               onChange={handleCurrencyChange}
               color="primary"
             />
-          }
-          label={`Mostra prezzi in ${currency === "EUR" ? "Sol" : "€"}`}
-          sx={{ mb: 2 }}
-        />
+        </Box>
         <RadioGroup
           row
           value={selectedPlan}
@@ -281,15 +336,19 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           ))}
         </RadioGroup>
         {selectedPlan && (
+          <Box variant="h6" gutterBottom sx={{ mt: 2 }}>
+            Hai selezionato il piano: {selectedPlan}
+          </Box>
+        )}
+        {selectedPlan && (
           <>
             {currency === "EUR" ? (
               <Button
                 variant="contained"
                 sx={{ mt: 2 }}
-                onClick={() => {
-                  /* funzione di pagamento con Stripe */
-                }}
+                onClick={() => handleStripeClick(selectedPlan)}
                 disabled={transactionCompleted}
+                endIcon={<Payments/>}
               >
                 Paga con Stripe
               </Button>
@@ -299,16 +358,12 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
                 sx={{ mt: 2 }}
                 onClick={handlePayInSol}
                 disabled={transactionCompleted || isPayingInSol} // Disabilita il pulsante se la transazione è completata o in corso
+                endIcon={<Payments/>}
               >
                 Paga in SOL
               </Button>
             )}
           </>
-        )}
-        {selectedPlan && (
-          <Box variant="h6" gutterBottom sx={{ mt: 2 }}>
-            Hai selezionato il piano: {selectedPlan}
-          </Box>
         )}
         {transactionCompleted && (
           <Button variant="contained" onClick={handleContinue} sx={{ mt: 2 }}>
