@@ -418,22 +418,26 @@ const UploadDocuments = () => {
               />
             </Button>
             {selectedFile && (
-              <div className="image-preview">
-                <br />
-                <img
-                  src={URL.createObjectURL(selectedFile)}
-                  alt="Preview"
-                  style={{
-                    alignSelf: "center",
-                    maxWidth: "200px",
-                    maxHeight: "200px",
-                    objectFit: "scale-down",
-                    marginBottom: 15,
-                  }}
-                />
-                <Typography variant="body1">{selectedFile.name}</Typography>
-              </div>
-            )}
+  <div className="image-preview">
+    <br />
+    <img
+      src={URL.createObjectURL(selectedFile)}
+      alt="Preview"
+      style={{
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: "100%",
+        height: "auto",
+        maxHeight: "500px", // Altezza massima dell'immagine
+        marginBottom: "15px",
+      }}
+    />
+    <Typography variant="body1" align="center">
+      {selectedFile.name}
+    </Typography>
+  </div>
+)}
             <Button
               onClick={uploadFile}
               disabled={!selectedFile || loading}

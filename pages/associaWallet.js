@@ -69,7 +69,7 @@ const WalletAssociation = () => {
         `Airdrop OK! Transazione: https://explorer.solana.com/tx/${airdropSignature}?cluster=devnet`
       );
 
-      toast.info("Airdrop Ricevuto! Link transazione: " + "https://explorer.solana.com/tx/" + airdropSignature + "?cluster=devnet");
+      toast.info("Airdrop Ricevuto!");
 
       // Redirect to dashboard or another page after successful association and airdrop
       setTimeout(() => {

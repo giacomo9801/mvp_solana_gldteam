@@ -14,6 +14,7 @@ import {
   Container,
   Box,
   CircularProgress,
+  duration,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { ContentCopy, PrivacyTip, Search } from "@mui/icons-material";
@@ -157,7 +158,10 @@ const App = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(wallet)
       .then(() => {
-        toast.info("Indirizzo copiato");
+        toast.info("Indirizzo copiato", {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
       })
       .catch(err => {
         console.error('Errore nel copiare il testo: ', err);
