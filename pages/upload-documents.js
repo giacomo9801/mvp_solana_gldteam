@@ -44,6 +44,8 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NavigationBar from "./components/NavigationBar";
 import { useRouter } from "next/router";
+import Tooltip from "@mui/material/Tooltip";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import Tesseract from "tesseract.js"; // Import tesseract.js
 
@@ -398,6 +400,15 @@ const UploadDocuments = () => {
             }}
           >
             <label htmlFor="fileInput" style={{ color: "black" }}>
+              <Box position="relative" top={2} right={10} p={1}>
+                <Tooltip
+                  title={
+                    "Si consiglia di caricare per test il FILE OCR presente nella cartella del progetto"
+                  }
+                >
+                  <InfoOutlinedIcon fontSize="small" />
+                </Tooltip>
+              </Box>
               Seleziona File:{" "}
             </label>
             <br />
