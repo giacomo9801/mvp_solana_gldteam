@@ -1,38 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+######## ITALIANO ########
 
-## Getting Started
+COMANDI PER AVVIARE CORRETTAMENTE IL PROGETTO
 
-First, run the development server:
+1 - npm install
+2 - npm run dev
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+----LOGIN----
+email: gld@gmail.com
+psw: Test
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+----ASSOCIA WALLET----
+aprire il wallet phantom ed importare la chiave privata presente nel file wallet.json, così possiamo monitorare se tutto funge correttamente (visto che si userà la chiave privata in questo file per tutte le transazioni). Eventualmente potete creare un nuovo wallet e inserire la chiave privata nel file wallet.json.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+----ABBONAMENTO----
+E' possibile scegliere sia l'abbaonemento con SOL sia EURO, scegliendo quello in EURO nella pagina di STRIPE inserire come carta di credito la seguente: 4242 4242 4242 4242, qualsiasi data di scadenza e qualsiasi CVC. Se non dovesse aprirsi provare a refreshare. Con Sol non ci sono problemi visto che quando collegate il wallet vi airdroppa automaticamente SOL.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+----MINT----
+Per il mint consiglio di utilizzare come test per l'OCR il file presente nella cartella PUBLIC - FILE_OCR, poi potete anche modificare i valori riscontrati per vedere se il sistema funge correttamente.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+----DECRIPTAZIONE----
+Viene utilizzata una chiave simmetrica sia per la criptazione che per la decriptazione, quindi non c'è bisogno di inserire una chiave privata per decriptare il file, avviene tutto automaticamente.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Se si prova a navigare nelle pagine senza aver effettuato il login, si verrà reindirizzati alla pagina di login (al momento gestite le pagine del wallet, abbonamento e home).
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+######## ENGLISH ########
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+COMMANDS TO SUCCESSFULLY START THE PROJECT
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1 - npm install
+2 - npm run dev
 
-## Deploy on Vercel
+----LOGIN----
+email: gld@gmail.com
+psw: Test
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+----ASSOCIATE WALLET----
+Open the Phantom wallet and import the private key found in the wallet.json file, so we can monitor if everything functions correctly (since we'll use the private key in this file for all transactions). Optionally, you can create a new wallet and insert the private key into wallet.json.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+----SUBSCRIPTION----
+You can choose either the subscription with SOL or EURO. If choosing EURO on the STRIPE page, use the following credit card: 4242 4242 4242 4242, any expiration date, and any CVC. If it doesn't open, try refreshing. There are no issues with SOL as it airdrops SOL automatically when you connect your wallet.
+
+----MINTING----
+For minting, it's recommended to use the file located in the PUBLIC - FILE_OCR folder as a test for OCR. You can then modify the encountered values to verify if the system functions correctly.
+
+----DECRYPTION----
+A symmetric key is used for both encryption and decryption, so there's no need to input a private key to decrypt the file; it all happens automatically.
+
+If you attempt to navigate pages without logging in, you'll be redirected to the login page (currently managing wallet, subscription, and home pages).
+
+
+
