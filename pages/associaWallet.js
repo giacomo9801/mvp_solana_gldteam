@@ -186,11 +186,15 @@ const WalletAssociation = () => {
               endIcon={<AccountBalanceWalletIcon />}
               onClick={handleAssociateWallet}
               disabled={connecting || airdropInProgress}
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                color: connecting ? "white" : "inherit", // Imposta il colore del testo su bianco quando connecting è true
+              }}
             >
               {connecting ? (
                 <>
-                  Connessione... <CircularProgress size={24} sx={{ ml: 2 }} />
+                  <span style={{ color: "white" }}>Connessione... </span>
+                  <CircularProgress size={24} sx={{ ml: 2, color: "white" }} />
                 </>
               ) : (
                 "Associa Wallet"
@@ -205,7 +209,6 @@ const WalletAssociation = () => {
 };
 
 export default WalletAssociation;
-
 
 // import React, { useState } from "react";
 // import { useRouter } from "next/router";

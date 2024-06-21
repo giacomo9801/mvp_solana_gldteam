@@ -100,6 +100,8 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
     setShowModal(true);
   };
   const handleStripeClick = (plan) => {
+    console.log("Handle Stripe Click premuto con il piano: ", plan);
+
     let price_id;
 
     switch (plan) {
@@ -186,10 +188,7 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           rel="noopener noreferrer"
         >
           Visualizza la transazione
-        </a>,
-        {
-          autoClose: 6000, // Durata notifica in millisecondi (8 secondi)
-        }
+        </a>
       );
 
       setTransactionCompleted(true);
@@ -420,26 +419,33 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           </>
         )}
         {transactionCompleted && (
-           <Box sx={{ mt: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
-           <Typography variant="body1" gutterBottom>
-             Pagamento avvenuto con successo 😎
-           </Typography>
-           <Button
-             variant="contained"
-             onClick={handleContinue}
-             sx={{
-               color: "black",
-               fontWeight: "bold",
-               backgroundColor: "yellow",
-               "&:hover": { backgroundColor: "yellowgreen" },
-               mt: 2, // Margine top per separare il testo dal pulsante
-             }}
-           >
-             Continua
-           </Button>
-         </Box>
+          <Box
+            sx={{
+              mt: 4,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body1" gutterBottom>
+              Pagamento avvenuto con successo 😎
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleContinue}
+              sx={{
+                color: "black",
+                fontWeight: "bold",
+                backgroundColor: "yellow",
+                "&:hover": { backgroundColor: "yellowgreen" },
+                mt: 2, // Margine top per separare il testo dal pulsante
+              }}
+            >
+              Continua
+            </Button>
+          </Box>
         )}
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </Container>
 
       <Backdrop

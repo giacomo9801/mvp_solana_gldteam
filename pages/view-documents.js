@@ -111,26 +111,27 @@ const ViewDocuments = () => {
 
   useEffect(() => {
     const hashCountMap = countFilesWithSameHash();
-  
+
     // Verifica se ci sono ripetizioni e mostra un alert solo una volta
     if (!hashCountAlerted && hasDuplicates(hashCountMap)) {
-      let message = "Attenzione!! Ci sono ripetizioni degli Hash! Sono stati caricati documenti uguali ma con possibili dati differenti:\n";
-  
+      let message =
+        "Attenzione!! Ci sono ripetizioni degli Hash! Sono stati caricati documenti uguali ma con possibili dati differenti:\n";
+
       // Filtra i documenti con ripetizioni maggiori di 1
       const duplicatedHashes = Object.entries(hashCountMap)
         .filter(([hash, count]) => count > 1)
         .map(([hash, count]) => ({ hash, count }));
-  
+
       // Costruisci il messaggio con le ripetizioni di hash
       duplicatedHashes.forEach(({ hash, count }) => {
         message += `Hash: ${hash}, Ripetizioni: ${count}\n`;
       });
-  
+
       alert(message);
       setHashCountAlerted(true); // Imposta il flag per non mostrare l'alert di nuovo
     }
   }, [documents, hashCountAlerted]); // Dipendenza dell'effetto sul cambio di documents e hashCountAlerted
-  
+
   return (
     <Container>
       <NavigationBar />
@@ -158,7 +159,8 @@ const ViewDocuments = () => {
         <Typography color="error">{error}</Typography>
       ) : documents.length === 0 ? (
         <Typography variant="h6" gutterBottom>
-          Per il wallet {ownerPublicKey} non sono stati trovati documenti caricati.
+          Per il wallet {ownerPublicKey} non sono stati trovati documenti
+          caricati.
         </Typography>
       ) : (
         <Box
@@ -194,7 +196,11 @@ const ViewDocuments = () => {
                   marginBottom: 10,
                 }}
               />
-              <Typography variant="h6" gutterBottom style={{ marginBottom: 10 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                style={{ marginBottom: 10 }}
+              >
                 {doc.name}
               </Typography>
               <Typography
@@ -216,7 +222,10 @@ const ViewDocuments = () => {
                 }}
               >
                 {doc.attributes.map((attr, index) => (
-                  <span key={index} style={{ display: "block", marginBottom: 5 }}>
+                  <span
+                    key={index}
+                    style={{ display: "block", marginBottom: 5 }}
+                  >
                     <strong>{attr.trait_type}:</strong> {attr.value}
                   </span>
                 ))}
@@ -230,8 +239,6 @@ const ViewDocuments = () => {
 };
 
 export default ViewDocuments;
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { Container, Typography, Box, CircularProgress } from "@mui/material";

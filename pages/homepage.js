@@ -30,6 +30,7 @@ import {
 } from "@metaplex-foundation/umi";
 import wallet from "./wallet.json"; // Assicurati che il percorso sia corretto
 import { ToastContainer, toast } from "react-toastify";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const fetchWalletData = async (walletAddress) => {
   const documents = [];
@@ -77,6 +78,20 @@ const fetchWalletData = async (walletAddress) => {
 };
 
 const App = () => {
+  const theme = createTheme({
+    components: {
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            "&:hover": {
+              boxShadow: "white 0px 0px 10px 0px",
+            },
+          },
+        },
+      },
+    },
+  });
+
   const router = useRouter();
   const { walletAddress } = router.query;
   const currentYear = new Date().getFullYear();
@@ -156,15 +171,16 @@ const App = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(wallet)
+    navigator.clipboard
+      .writeText(wallet)
       .then(() => {
         toast.info("Indirizzo copiato", {
           position: "bottom-right",
           autoClose: 2000,
         });
       })
-      .catch(err => {
-        console.error('Errore nel copiare il testo: ', err);
+      .catch((err) => {
+        console.error("Errore nel copiare il testo: ", err);
       });
   };
 
@@ -186,222 +202,239 @@ const App = () => {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#333",
-        color: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        overflow: "hidden",
-        backgroundImage: "url(/solanawp.png)",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        opacity: 0.9,
-        position: "relative",
-      }}
-    >
-      <ToastContainer />
-      <header>
-        <Typography variant="h2" align="center" gutterBottom marginTop={5}>
-          Dashboard
-        </Typography>
-        <Typography variant="h6" align="center" gutterBottom>
-          Ciao {email} 👋
-        </Typography>
-      </header>
-      <Container
+    <ThemeProvider theme={theme}>
+      <Box
         sx={{
-          flexGrow: 1,
+          minHeight: "100vh",
+          backgroundColor: "#333",
+          color: "#fff",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          overflow: "hidden",
+          backgroundImage: "url(/solanawp.png)",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          opacity: 0.9,
           position: "relative",
         }}
       >
+        <ToastContainer />
+        <header>
+          <Typography variant="h2" align="center" gutterBottom marginTop={5}>
+            Dashboard
+          </Typography>
+          <Typography variant="h6" align="center" gutterBottom>
+            Ciao {email} 👋
+          </Typography>
+        </header>
+        <Container
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "40%",
+              right: "70%",
+              transform: "translateY(-50%) scaleX(-1)",
+              zIndex: -1,
+            }}
+          >
+            <img
+              src="/robot.png"
+              alt="Robot"
+              style={{ width: "300px", height: "auto" }}
+            />
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+          >
+            <Card
+              sx={{
+                minWidth: 275,
+                margin: 2,
+                padding: 2,
+                backgroundColor: "rgba(5, 40, 76, 0.7)",
+                backdropFilter: "blur(10px)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                borderRadius: 10,
+                border: "1px solid rgba(255, 255, 255, 0.18)",
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  align="center"
+                  gutterBottom
+                >
+                  Carica i tuoi documenti
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<SendIcon />}
+                  onClick={() => router.push("/upload-documents")}
+                  sx={{ mt: 2 }}
+                >
+                  Carica
+                </Button>
+              </CardContent>
+            </Card>
+            <Card
+              sx={{
+                minWidth: 275,
+                margin: 2,
+                padding: 2,
+                backgroundColor: "rgba(5, 40, 76, 0.7)",
+                backdropFilter: "blur(10px)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                borderRadius: 10,
+                border: "1px solid rgba(255, 255, 255, 0.18)",
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  align="center"
+                  gutterBottom
+                >
+                  Visualizza tutti i tuoi documenti
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<Search />}
+                  onClick={() => router.push("/view-documents")}
+                  sx={{ mt: 2 }}
+                >
+                  Visualizza
+                </Button>
+              </CardContent>
+            </Card>
+            <Card
+              sx={{
+                minWidth: 275,
+                margin: 2,
+                padding: 2,
+                backgroundColor: "rgba(5, 40, 76, 0.7)",
+                backdropFilter: "blur(10px)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                borderRadius: 10,
+                border: "1px solid rgba(255, 255, 255, 0.18)",
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              <CardContent
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  align="center"
+                  gutterBottom
+                >
+                  Decripta i tuoi documenti
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<PrivacyTip />}
+                  onClick={() => router.push("/decrypt-documents")}
+                  sx={{ mt: 2 }}
+                >
+                  Decripta
+                </Button>
+              </CardContent>
+            </Card>
+          </Box>
+        </Container>
         <Box
           sx={{
             position: "absolute",
-            top: "40%",
-            right: "70%",
-            transform: "translateY(-50%) scaleX(-1)",
-            zIndex: -1,
+            top: 20,
+            right: 20,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            padding: 2,
+            borderRadius: 5,
+            color: "white",
           }}
         >
-          <img
-            src="/robot.png"
-            alt="Robot"
-            style={{ width: "300px", height: "auto" }}
-          />
-        </Box>
-        <Box display="flex" justifyContent="center" alignItems="center" gap={2}>
-          <Card
-            sx={{
-              minWidth: 275,
-              margin: 2,
-              padding: 2,
-              backgroundColor: "rgba(5, 40, 76, 0.7)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)",
-              color: "white",
-              textAlign: "center",
-            }}
-          >
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h5"
-                component="h2"
-                align="center"
-                gutterBottom
-              >
-                Carica i tuoi documenti
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<SendIcon />}
-                onClick={() => router.push("/upload-documents")}
-                sx={{ mt: 2 }}
-              >
-                Carica
-              </Button>
-            </CardContent>
-          </Card>
-          <Card
-            sx={{
-              minWidth: 275,
-              margin: 2,
-              padding: 2,
-              backgroundColor: "rgba(5, 40, 76, 0.7)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)",
-              color: "white",
-              textAlign: "center",
-            }}
-          >
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h5"
-                component="h2"
-                align="center"
-                gutterBottom
-              >
-                Visualizza tutti i tuoi documenti
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<Search />}
-                onClick={() => router.push("/view-documents")}
-                sx={{ mt: 2 }}
-              >
-                Visualizza
-              </Button>
-            </CardContent>
-          </Card>
-          <Card
-            sx={{
-              minWidth: 275,
-              margin: 2,
-              padding: 2,
-              backgroundColor: "rgba(5, 40, 76, 0.7)",
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              borderRadius: 10,
-              border: "1px solid rgba(255, 255, 255, 0.18)",
-              color: "white",
-              textAlign: "center",
-            }}
-          >
-            <CardContent
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="h5"
-                component="h2"
-                align="center"
-                gutterBottom
-              >
-                Decripta i tuoi documenti
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<PrivacyTip />}
-                onClick={() => router.push("/decrypt-documents")}
-                sx={{ mt: 2 }}
-              >
-                Decripta
-              </Button>
-            </CardContent>
-          </Card>
-        </Box>
-      </Container>
-      <Box
-        sx={{
-          position: "absolute",
-          top: 20,
-          right: 20,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          padding: 2,
-          borderRadius: 5,
-          color: "white",
-        }}
-      >
-        <Typography variant="body2">
-          ✉️ <strong>Email:</strong> {email}
-        </Typography>
-        <Typography variant="body2">
-          🔑 <strong>Wallet:</strong> {formatWallet(wallet)}
-          {<ContentCopy fontSize="small" style={{cursor: 'pointer'}} onClick={copyToClipboard}/>}
-        </Typography>
-        <Typography variant="body2">
-          📄 <strong>Documenti caricati:</strong>{" "}
-          {loading ? <CircularProgress size={16} /> : uploadedDocuments}
-        </Typography>
-        <Typography variant="body2">
-          {getSubscriptionEmoji(subscriptionPlan)}<strong> Abbonamento:</strong> {subscriptionPlan}{" "}
-        </Typography>
-        <Typography variant="body2">
-          💰 <strong>Saldo:</strong> {balance} SOL
-        </Typography>
-        <Typography variant="body2">
-          🗓️ <strong>Data odierna:</strong> {todayDate}
-        </Typography>
-        {error && (
-          <Typography variant="body2" color="error">
-            {error}
+          <Typography variant="body2" align="center">
+            <strong>INFO PROFILO</strong>
           </Typography>
-        )}
+          <Typography variant="body2">
+            ✉️ <strong>Email:</strong> {email}
+          </Typography>
+          <Typography variant="body2">
+            🔑 <strong>Wallet:</strong> {formatWallet(wallet)}
+            {
+              <ContentCopy
+                fontSize="small"
+                style={{ cursor: "pointer" }}
+                onClick={copyToClipboard}
+              />
+            }
+          </Typography>
+          <Typography variant="body2">
+            📄 <strong>Documenti caricati:</strong>{" "}
+            {loading ? <CircularProgress size={16} /> : uploadedDocuments}
+          </Typography>
+          <Typography variant="body2">
+            {getSubscriptionEmoji(subscriptionPlan)}
+            <strong> Abbonamento:</strong> {subscriptionPlan}{" "}
+          </Typography>
+          <Typography variant="body2">
+            💰 <strong>Saldo:</strong> {balance} SOL
+          </Typography>
+          <Typography variant="body2">
+            🗓️ <strong>Data odierna:</strong> {todayDate}
+          </Typography>
+          {error && (
+            <Typography variant="body2" color="error">
+              {error}
+            </Typography>
+          )}
+        </Box>
+        <footer>
+          <Typography variant="body2" align="center" gutterBottom>
+            &copy; {currentYear} GLD Team. Tutti i diritti riservati. MVP -
+            MasterZ x Solana
+          </Typography>
+        </footer>
       </Box>
-      <footer>
-        <Typography variant="body2" align="center" gutterBottom>
-          &copy; {currentYear} GLD Team. Tutti i diritti riservati. MVP -
-          MasterZ x Solana
-        </Typography>
-      </footer>
-    </Box>
+    </ThemeProvider>
   );
 };
 

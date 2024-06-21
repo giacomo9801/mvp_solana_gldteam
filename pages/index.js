@@ -22,6 +22,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import Tooltip from "@mui/material/Tooltip";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const theme = createTheme({
   palette: {
@@ -52,7 +54,7 @@ const teamMembers = [
     name: "Giacomo Corcella",
     role: "CEO (Chief Executive Officer)",
     image: "./giacomo.jpeg",
-    description: "Esperto Blockchain e Dev in EY",
+    description: "Esperto Blockchain e Full Stack. Dev in EY",
     linkedin: "https://www.linkedin.com/in/giacomocorcella/",
     email: "giacomocorcella17@gmail.com",
   },
@@ -60,7 +62,7 @@ const teamMembers = [
     name: "Davide Porcelluzzi",
     role: "CTO (Chief Technology Officer)",
     image: "./davide.jpg",
-    description: "xxx e Dev in EY.",
+    description: "Esperto Java e Full Stack. Dev in EY.",
     linkedin: "https://www.linkedin.com/in/davide-porcelluzzi-969b66171/",
     email: "Davide.por15@gmail.com",
   },
@@ -68,7 +70,7 @@ const teamMembers = [
     name: "Luigi Cafagna",
     role: "CIO (Chief Information Officer)",
     image: "./luigi.jpg",
-    description: "xxx e Dev in Accenture.",
+    description: "Esperto Back-End. Dev in Accenture.",
     linkedin: "https://www.linkedin.com/in/luigicafagna/",
     email: "luigi.cafagna01@gmail.com",
   },
@@ -89,14 +91,12 @@ const LoginSection = ({
     justifyContent="center"
     alignItems="center"
     gap={4}
-    sx={{ mt: 4, width: "99%" }}
+    sx={{ mt: 4, width: "100%" }}
   >
-
     <Card
       sx={{
         flex: 1,
         margin: 2,
-        marginBottom: 40,
         padding: 4,
         backgroundColor: "rgba(5, 40, 76, 0.7)",
         backdropFilter: "blur(10px)",
@@ -105,10 +105,24 @@ const LoginSection = ({
         border: "1px solid rgba(255, 255, 255, 0.18)",
         color: "white",
         textAlign: "center",
-        marginInline: 70
+        marginInline: { xs: 2, sm: 4, md: 6, lg: 8, xl: 10 },
+        marginBottom: { xs: 4, sm: 6, md: 8, lg: 10, xl: 12 },
+        maxWidth: { xs: "90%", sm: "80%", md: "70%", lg: "60%", xl: "50%" }, // aggiunta per ridurre la larghezza su schermi grandi
+        position: "relative", // rende possibile posizionare l'icona in modo assoluto
       }}
       data-aos="fade-up"
     >
+      <Box position="absolute" top={20} right={10} p={2}>
+        <Tooltip
+          title={
+            "Per questo test utilizza le seguenti credenziali:" +
+            "\nEmail: gld@gmail.com" +
+            "\nPassword: Test\n"
+          }
+        >
+          <InfoOutlinedIcon fontSize="small" />
+        </Tooltip>
+      </Box>
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
           Login con Email e Password
@@ -128,6 +142,7 @@ const LoginSection = ({
           fullWidth
           id="email"
           label="Email"
+          placeholder="Inserisci la tua email"
           name="email"
           autoComplete="email"
           autoFocus
@@ -150,6 +165,7 @@ const LoginSection = ({
           fullWidth
           name="password"
           label="Password"
+          placeholder="Inserisci la tua password"
           type="password"
           id="password"
           autoComplete="current-password"
@@ -177,7 +193,7 @@ const LoginSection = ({
         >
           {isLoading ? "Login in corso..." : "Accedi"}
         </Button>
-        <Divider style={{marginBlock: 10}}>O</Divider>
+        <Divider style={{ marginBlock: 10 }}>O</Divider>
         <Typography variant="h5" component="h2" gutterBottom>
           Login con SPID
         </Typography>
@@ -191,13 +207,12 @@ const LoginSection = ({
             borderRadius: 1,
             padding: 1,
             marginBottom: 2,
-            marginInline: 25
+            marginInline: 2,
           }}
         >
           Work in progress...
         </Typography>
         <Button
-          //disabilitalo
           disabled
           variant="contained"
           color="primary"
@@ -291,7 +306,7 @@ const Homepage = () => {
               </Typography>
 
               <Typography variant="h5" component="h2" gutterBottom>
-                Soluzione Blockchain sviluppato da{"  "}
+                Soluzione Blockchain sviluppata dal{"  "}
                 <span
                   style={{
                     fontWeight: "bold",
@@ -299,9 +314,10 @@ const Homepage = () => {
                     color: "yellow",
                   }}
                 >
-                  GLD Team
+                  "GLD Team"
                 </span>{" "}
-                per la notarizzazione di documenti tramite NFT su Blockchain Solana.
+                per la notarizzazione di documenti in forma criptata su
+                Blockchain Solana.
               </Typography>
             </Box>
           </Container>
@@ -423,12 +439,16 @@ const Homepage = () => {
             <Grid container spacing={4}>
               {teamMembers.map((member, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Card data-aos="fade-up">
+                  <Card data-aos="fade-up" sx={{ borderRadius: 7 }}>
                     <CardMedia
                       component="img"
                       height="200"
                       image={member.image}
                       alt={member.name}
+                      sx={{
+                        transition: "transform 0.3s ease-in-out",
+                        "&:hover": { transform: "scale(1.1)" },
+                      }}
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5">
@@ -474,7 +494,7 @@ const Homepage = () => {
             >
               <CountUp
                 end={32673489}
-                duration={10}
+                duration={12}
                 separator=","
                 prefix="📄"
                 delay={1}
