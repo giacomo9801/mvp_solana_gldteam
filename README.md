@@ -1,3 +1,10 @@
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/a39fbc7d-1eba-4ea5-8897-ea262b5d0997)
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/271fbc11-f7e9-4595-9943-4a3fd4f987aa)
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/3fb7b4fb-2f19-423c-85a0-d20cbb2e0b1e)
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/02ff30d0-cb45-4541-a945-92ff20d9afdf)
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/942bbd88-6d53-4870-ac1d-89cfa29d57ba)
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/0e14b81e-7d29-4c4e-ba46-ba0e83faadf0)
+![image](https://github.com/giacomo9801/mvp_solana_gldteam/assets/38552315/416c2a11-7dbc-4b28-9023-a2c1b530d11a)
 
 
 ######## ITALIANO ########
