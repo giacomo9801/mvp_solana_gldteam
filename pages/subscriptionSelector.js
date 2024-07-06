@@ -190,7 +190,7 @@ const SubscriptionSelector = ({ initialSelectedPlan }) => {
           Visualizza la transazione
         </a>
       );
-
+      sessionStorage.setItem("verifySubscription", "true");
       setTransactionCompleted(true);
     } catch (error) {
       console.error("Errore durante la transazione", error);
