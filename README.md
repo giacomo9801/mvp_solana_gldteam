@@ -32,6 +32,9 @@ Viene utilizzata una chiave simmetrica sia per la criptazione che per la decript
 
 Se si prova a navigare nelle pagine senza aver effettuato il login, si verrà reindirizzati alla pagina di login (al momento gestite le pagine del wallet, abbonamento e home).
 
+Nel primo avvio, il pagamento con STRIPE ci mette circa 1 minuto a caricare, quindi attendere pazientemente.
+
+TIPS: In base al tipo di abbonamento scelto cambierà anche la medaglia visualizzata nelle info profilo.
 
 ######## ENGLISH ########
 
@@ -57,6 +60,10 @@ For minting, it's recommended to use the file located in the PUBLIC - FILE_OCR f
 A symmetric key is used for both encryption and decryption, so there's no need to input a private key to decrypt the file; it all happens automatically.
 
 If you attempt to navigate pages without logging in, you'll be redirected to the login page (currently managing wallet, subscription, and home pages).
+
+On the first launch, the payment with STRIPE takes about 1 minute to load, so please wait patiently.
+
+TIPS: Depending on the type of subscription chosen, the badge displayed in the profile info will also change.
 
 
 
